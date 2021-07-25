@@ -1,5 +1,5 @@
 {
-  "name": "capability-project-application",
+  "name": "dataset-metadata-application",
   "private": true,
   "scripts": {
     "build": "yarn workspaces run build",

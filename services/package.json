@@ -1,5 +1,5 @@
 {
-  "name": "capability-project-services",
+  "name": "dataset-metadata-services",
   "version": "",
   "scripts": {
     "build": "tsc",
