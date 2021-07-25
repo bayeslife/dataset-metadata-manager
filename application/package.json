@@ -1,0 +1,41 @@
+{
+  "name": "capability-project-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@types/debug": "^4.1.5",
+    "azure-storage": "^2.10.3",
+    "debug": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "riteway": "^6.2.1",
+    "sequelize": "^6.3.5",
+    "tedious": "^9.2.1"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25",
+    "nodemon": "^2.0.6",
+    "sqlite3": "^5.0.0",
+    "typescript": "^4.0.5"
+  },
+  "scripts": {
+    "start": "nodemon --exec 'npm run build'",
+    "build": "npm run test",
+    "test": "tsc --rootDir '.' --outDir './dist'  && ./node_modules/riteway/bin/riteway dist/test/**/*.test.js",
+    "watch": "nodemon --exec 'npm run test'",
+    "serve": "echo 'no op'",
+    "tsc": "tsc --outDir './dist'"
+  },
+  "nodemonConfig": {
+    "ext": "ts,json",
+    "ignore": [
+      "dist/*"
+    ],
+    "delay": "500"
+  },
+  "author": "",
+  "license": "ISC"
+}

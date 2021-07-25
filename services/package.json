@@ -1,0 +1,39 @@
+{
+  "name": "capability-project-services",
+  "version": "",
+  "scripts": {
+    "build": "tsc",
+    "build:production": "npm run prestart && npm prune --production",
+    "watch": "tsc --w",
+    "prestart": "npm run build && func extensions install",
+    "start:host": "func start",
+    "start": "npm-run-all --parallel start:host watch",
+    "serve": "echo 'no op'",
+    "test": "echo \"No tests yet...\""
+  },
+  "description": "",
+  "devDependencies": {
+    "@azure/functions": "^1.0.1-beta1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "@types/busboy": "^0.2.3",
+    "@types/debug": "^4.1.7",
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^14.14.7",
+    "@types/sequelize": "^4.28.9",
+    "azure-function-express": "^2.0.0",
+    "azure-storage": "^2.10.3",
+    "busboy": "^0.3.1",
+    "debug": "^4.3.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "passport": "^0.4.1",
+    "passport-azure-ad": "^4.3.0",
+    "path": "^0.12.7",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0",
+    "tedious": "^11.0.6"
+  }
+}
