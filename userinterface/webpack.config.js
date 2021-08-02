@@ -22,7 +22,7 @@ module.exports = (env) => {
       minimize: false,
     },
     devServer: {
-      port: 3005,
+      port: 3016,
       https: {
         key: env.BUILD==='CI' ? 'notused' : fs.readFileSync('./key.pem'),
         cert: env.BUILD==='CI' ? 'notused' : fs.readFileSync('./cert.pem'),

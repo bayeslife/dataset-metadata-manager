@@ -5,7 +5,7 @@ const location = window.location.origin
 export function getAPIDomain(): string {
   const developmentDomain = window.localStorage.getItem('Capability:ProjectAPIDomain')
   if (developmentDomain) return developmentDomain
-  if (location.indexOf('localhost') >= 0) return 'http://localhost:7075'
+  if (location.indexOf('localhost') >= 0) return 'http://localhost:7086'
   else {
     return process.env.API_DOMAIN || 'please define API_DOMAIN'
   }

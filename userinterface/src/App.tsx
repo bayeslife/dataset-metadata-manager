@@ -34,8 +34,8 @@ function App() {
               <HashRouter hashType='slash'>
                 <Layout>
                   <Switch>
-                    <Route path='/style' render={() => <StyleSelect onSelect={onSelect} />} />                    
-                    <Route path='/' exact component={Home} />
+                    <Route path='/style' render={() => <StyleSelect onSelect={onSelect} />} />                                        
+                    <Route path='/' component={Home} />
                   </Switch>
                 </Layout>
               </HashRouter>                   
