@@ -1,6 +1,6 @@
-import { IProject } from "../types";
-import { PROJECT_TYPE, CATEGORY_TYPE } from "../domain";
-import { SMOKE_DOMAIN } from "../domain";
+import { IFileEvent } from "../types";
+import { FILEEVENT_TYPE } from "../domain";
+
 
 const DEMO_COUNT=100
 
@@ -10,26 +10,20 @@ const id = (): string => {
 };
 
 
-const DEMO_PROJECT : IProject = {
+const DEMO_FILEEVENT : IFileEvent = {
   id: "FY2021",
-  type: PROJECT_TYPE,
-  name: "Port-FY2021",
-  description: "Port FY2021",
-  context: SMOKE_DOMAIN,
-  updatedBy: "Phil",
+  type: FILEEVENT_TYPE,  
+  description: "Port FY2021",  
   createdBy: "Phil",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  locked: false,
-  archived: true,
+  createdAt: new Date(),  
 }
 
 
 export const Log = () => {
-  const projects: IProject[] = [];
-  projects.push(DEMO_PROJECT)
+  const fileevents: IFileEvent[] = [];
+  fileevents.push(DEMO_FILEEVENT)
 
   return [
-    ...projects,      
+    ...fileevents,      
   ];
 };

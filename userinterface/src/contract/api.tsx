@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { getAPI } from '../config'
-import { IProject, ICommandResult } from '../../../application/src/types'
-import { COMMAND_STATUS, TERMINAL_DOMAIN } from '../../../application/src/domain'
+import { IFileEvent, ICommandResult } from '../../../application/src/types'
+import { COMMAND_STATUS } from '../../../application/src/domain'
 
 const handleResponse = (res: Response) => {
   try {
@@ -75,40 +75,61 @@ export async function getApplicationConfig(): Promise<any> {
   })
 }
 
-export async function createProject(data: object) {
-  const localToken = window.localStorage.getItem('AccessToken')
-  return service.post('/ModelService/projects', data, {
-    headers: { Authorization: `Bearer ${localToken}` },
-  })
-}
+// export async function createProject(data: object) {
+//   const localToken = window.localStorage.getItem('AccessToken')
+//   return service.post('/ModelService/projects', data, {
+//     headers: { Authorization: `Bearer ${localToken}` },
+//   })
+// }
 
-export async function queryProjects(context?: string): Promise<IProject[]> {
-  const localToken = window.localStorage.getItem('AccessToken')
-  const localContext = context || window.localStorage.getItem('context') || TERMINAL_DOMAIN
-  return service.get(`/ModelService/projects`, {
-    headers: {
-      context: localContext,
+// export async function queryProjects(context?: string): Promise<IFileEvent[]> {
+//   const localToken = window.localStorage.getItem('AccessToken')
+//   const localContext = context || window.localStorage.getItem('context') || TERMINAL_DOMAIN
+//   return service.get(`/ModelService/projects`, {
+//     headers: {
+//       context: localContext,
+//       Authorization: `Bearer ${localToken}`,
+//     },
+//   })
+// }
+
+// export async function deleteProject(id: string): Promise<ICommandResult> {
+//   const localToken = window.localStorage.getItem('AccessToken')
+//   try {
+//     return service.delete(`/ModelService/project/${id}`, {
+//       headers: { Authorization: `Bearer ${localToken}` },
+//     })
+//   } catch (e) {
+//     console.log(e)
+//     return {msg:e, status: COMMAND_STATUS.FAILED}
+//   }
+// }
+
+// export async function getProject(id: string): Promise<IFileEvent> {
+//   const localToken = window.localStorage.getItem('AccessToken')
+//   return service.get(`/ModelService/project/${id}`, {
+//     headers: { Authorization: `Bearer ${localToken}` },
+//   })
+// }
+
+export async function postFileSlice(datasetType:string,content: string| ArrayBuffer,name: string,sliceNumber: number, totalSlices: number): Promise<ICommandResult> {
+  const localToken = window.localStorage.getItem('AccessToken')    
+  return service.post(`/ModelService/file`, {
+    fileData: content,
+    datasetType,
+    name,
+    sliceNumber,
+    totalSlices
+  },{
+    headers: {      
       Authorization: `Bearer ${localToken}`,
-    },
+    }
   })
 }
 
-export async function deleteProject(id: string): Promise<ICommandResult> {
+export async function createFileEvent(name: string,blobId:string) {
   const localToken = window.localStorage.getItem('AccessToken')
-  try {
-    return service.delete(`/ModelService/project/${id}`, {
-      headers: { Authorization: `Bearer ${localToken}` },
-    })
-  } catch (e) {
-    console.log(e)
-    return {msg:e, status: COMMAND_STATUS.FAILED}
-  }
-}
-
-export async function getProject(id: string): Promise<IProject> {
-  const localToken = window.localStorage.getItem('AccessToken')
-  return service.get(`/ModelService/project/${id}`, {
+  return service.post('/ModelService/fileevent', {name,blobId}, {
     headers: { Authorization: `Bearer ${localToken}` },
   })
 }
-

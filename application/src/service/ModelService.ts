@@ -1,6 +1,6 @@
 import Debug from "debug";
-import { ICommandResult, IModel, IProject } from "../types";
-import { PROJECT_TYPE, CATEGORY_TYPE, COMMAND_STATUS } from "../domain";
+import { ICommandResult, IModel, IFileEvent } from "../types";
+import { FILEEVENT_TYPE, COMMAND_STATUS } from "../domain";
 const { v4: uuid } = require("uuid");
 
 const debug = Debug("ModelService");
@@ -8,33 +8,33 @@ const debug = Debug("ModelService");
 let seeded = false;
 
 export const ModelService = async (model: IModel) => {
-  const createProject = async (Project: IProject): Promise<IProject> => {
-    const relationalModel = await model.Project.create(Project);
+  const createFileEvent = async (FileEvent: IFileEvent): Promise<IFileEvent> => {
+    const relationalModel = await model.FileEvent.create(FileEvent);
     return relationalModel;
   };
 
-  const updateProject = async (Project: IProject): Promise<IProject> => {
-    const relationalModel = await model.Project.upsert(Project);
+  const updateFileEvent = async (FileEvent: IFileEvent): Promise<IFileEvent> => {
+    const relationalModel = await model.FileEvent.upsert(FileEvent);
     return relationalModel;
   };
 
-  const queryProjects = async (where?: any) => {
-    const relationalModel = await model.Project.query(where);
+  const queryFileEvents = async (where?: any) => {
+    const relationalModel = await model.FileEvent.query(where);
     return relationalModel;
   };
 
-  const getProject = async (id: string) => {
-    const relationalModel = await model.Project.get(id);
+  const getFileEvent = async (id: string) => {
+    const relationalModel = await model.FileEvent.get(id);
     return relationalModel;
   };
 
-  const deleteProject = async (id: string): Promise<ICommandResult> => {
+  const deleteFileEvent = async (id: string): Promise<ICommandResult> => {
     try {
       const result: ICommandResult = {
-        msg: "Project Deleted",
+        msg: "FileEvent Deleted",
         status: COMMAND_STATUS.OK,
       };
-      await model.Project.destroy(id);
+      await model.FileEvent.destroy(id);
       return result;
     } catch (e) {
       console.log(e);
@@ -43,8 +43,8 @@ export const ModelService = async (model: IModel) => {
   };
 
   const create = (specification: any) => {
-    if (specification.type === PROJECT_TYPE) {
-      return model.Project.create(specification);
+    if (specification.type === FILEEVENT_TYPE) {
+      return model.FileEvent.create(specification);
     }
   };
 
@@ -63,14 +63,14 @@ export const ModelService = async (model: IModel) => {
 
   
   return {
-    PROJECT_TYPE,
+    FILEEVENT_TYPE,
 
     model,
     seed,
-    queryProjects,
-    createProject,
-    updateProject,
-    getProject,
-    deleteProject,    
+    queryFileEvents,
+    createFileEvent,
+    updateFileEvent,
+    getFileEvent,
+    deleteFileEvent,    
   };
 };

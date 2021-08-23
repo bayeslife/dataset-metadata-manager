@@ -1,56 +1,33 @@
 import React, { FC, useState } from 'react'
 
+import Background from '../assets/data-collection.jpg'
+import Logo from '../assets/logo.png'
+
 export const Home: FC = () => {
 
-  const [path,pathSet]= useState()
-
-  const handleUpload = ()=> {    
-    window.postMessage({ 
-      type: 'upload'     
-    },'*')
-  }
-
-  const handleChooseFile = ()=> {    
-    window.postMessage({ 
-      type: 'show-chooser'     
-    },'*')
-  }
-
-  const handleFileChange=(event:any)=>{    
-    pathSet(event.target.value)
-  }
-
-  const handleProjectChange=()=>{
-
-  }
+  const backgroundImage = Background
 
   return (
-    <div className='pageContainer'>
-      <div className='pageTitle'>
-        <h1>Dataset MetaData Manager</h1></div>
-      <div className='pageContent'>      
-        <div >
-          <pre id="file-path"></pre>    
-        </div>
-        <div>
-            Project:<input type="text" id="project" name="project" value="my-project" onChange={handleProjectChange}/>
-        </div>
-        <div>
-            Client:<input type="text" id="client" name="client" value="my-client" onChange={handleProjectChange}/>
-        </div>
-        <div>
-            Site Location Latitude:<input type="text" id="latitude" name="latitude" value="0" onChange={handleProjectChange}/> Longitude:<input type="text" id="longitude" name="longitude" value="0" onChange={handleProjectChange}/>
-        </div>
-        <div>
-            <button onClick={handleChooseFile}>Choose File</button>
-        </div>
-        <div>
-            <button id="file-upload-button" onClick={handleUpload}>Upload</button>
-        </div>
-        <div>
-            <pre id="progress"></pre>    
+      <div>
+        <div className='login-page' style={{ backgroundImage: `url(${backgroundImage})` }}>
+         <div className='login-gradient' />
+        <div className='login-container'>
+          <div className='login-header'>
+                <img src={Logo} alt='' width='300px'  />
+          </div>
+          <div className='login-content'>
+            <h2>Welcome to the Data Collector </h2>
+            <p>
+              This Aurecon application provides capabilities upload data set files.
+              </p>   
+              <p>
+              Users select files, provide meta data and submit data sets.
+              </p>
+        
+          <div className='login-content' />
         </div>      
+      </div>
+      </div>
       </div>      
-    </div>
   )
 }

@@ -1,5 +1,5 @@
 export interface IModel {
-  Project: any;
+  FileEvent: any;
   close: any;
 }
 
@@ -9,35 +9,17 @@ export interface ICommandResult {
   entity?: any // eslint-disable-line 
 }
 
-export interface IProjectModel {
-  create: any;
-  update: any;
-}
 
-export interface IDataRow {
-  id: string;
-  name: string;
-}
-
-export interface IEntity extends IDataRow {
-  type: string
-}
-
-export interface IDataLockable extends IEntity {
-  locked: boolean
-  lockedBy?: string
-}
-export interface IDataArchivable extends IEntity {
-  archived: boolean
-  archivedBy?: string
-}
-
-export type IProject = IDataLockable &
-  IDataArchivable & {
-  description: string;
-  context: string;
-  updatedBy: string;
-  updatedAt: Date;
+export type IFileEvent = {
+  type: string,
+  id:string,
+  description: string;  
   createdBy: string;
   createdAt: Date;  
+}
+
+
+export interface IFileService {
+  download: (datasetType:string, reference:string)=>Promise<String | null>
+  sendBlock: (datasetType:string, content:string, key:string , sliceNumber: number , totalSlices: number)=>void
 }

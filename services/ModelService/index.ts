@@ -8,8 +8,10 @@ import { createAzureFunctionHandler } from "azure-function-express";
 import bodyparser from "body-parser";
 import { config } from "../src/config";
 import { authorizationStrategy } from "../src/auth";
-import { IProject } from "../../application/src/types";
+import { IFileEvent } from "../../application/src/types";
 import { COMMAND_STATUS } from "../../application/src/domain";
+import { IFileService } from '../../application/src/types'
+import { FileService } from "../../application/src/service/FileService";
 
 const debug = Debug("ModelService");
 
@@ -25,116 +27,118 @@ const initializeModel = async () => {
   const log = Log();
   if (config.seed) await modelService.seed(log);
 };
-initializeModel();
 
-app.get(
-  "/api/ModelService/project/:id",
-  passport.authenticate("oauth-bearer", { session: false }),
-  async (req, res) => {
-    try {
-      if (!modelService) await initializeModel();
-      const id = req.params.id;
-      let project = await modelService.getProject(id);
-      if (project) res.status(200).send(project);
-      else res.status(500);
-    } catch (ex) {
-      console.log(ex);
-      res.status(500).send({ error: ex });
-    }
-  }
-);
+let fileService : IFileService = null;
+const initializeFileService = async () => {
+  if(!fileService)
+    fileService = await FileService(config.storageAccount)
+};
+initializeFileService();
 
-app.get(
-  "/api/ModelService/projects",
-  passport.authenticate("oauth-bearer", { session: false }),
-  async (req, res) => {
-    if (!modelService) await initializeModel();
+// app.get(
+//   "/api/ModelService/project/:id",
+//   passport.authenticate("oauth-bearer", { session: false }),
+//   async (req, res) => {
+//     try {
+//       if (!modelService) await initializeModel();
+//       const id = req.params.id;
+//       let project = await modelService.getProject(id);
+//       if (project) res.status(200).send(project);
+//       else res.status(500);
+//     } catch (ex) {
+//       console.log(ex);
+//       res.status(500).send({ error: ex });
+//     }
+//   }
+// );
 
-    const where = {};
-    const context = req.headers["context"];
-    if (context) {
-      Object.assign(where, { context });
-    }
+// app.get(
+//   "/api/ModelService/projects",
+//   passport.authenticate("oauth-bearer", { session: false }),
+//   async (req, res) => {
+//     if (!modelService) await initializeModel();
 
-    let projects = await modelService.queryProjects(where);
+//     const where = {};
+//     const context = req.headers["context"];
+//     if (context) {
+//       Object.assign(where, { context });
+//     }
 
-    res.status(200).send(projects);
-  }
-);
+//     let projects = await modelService.queryProjects(where);
+
+//     res.status(200).send(projects);
+//   }
+// );
 
 app.post(
-  "/api/ModelService/projects",
+  "/api/ModelService/fileevents",
   passport.authenticate("oauth-bearer", { session: false }),
   async (req, res) => {
     try {
       if (!modelService) await initializeModel();
 
-      var project: IProject = req.body;
-      project.createdBy = project.createdBy || req.authInfo.name;
-      project.updatedBy = req.authInfo.name;
-      project.updatedAt = new Date();
+      var fileevent: IFileEvent = req.body;
+      fileevent.createdBy = fileevent.createdBy || req.authInfo.name;      
+        
+      //fileevent = await modelService.createFileEvent(fileevent);
+      
+      res.status(200).send(fileevent);
+    } catch (ex) {
+      console.log(ex);
+      res.status(500).send({ error: ex });
+    }
+  }
+);
 
-      if (project.id) {
-        const prev = await modelService.getProject(project.id);
-        if (prev.locked !== project.locked)
-          project.lockedBy = req.authInfo.name;
-        if (prev.archived !== project.archived)
-          project.archivedBy = req.authInfo.name;
+// app.delete(
+//   "/api/ModelService/project/:id",
+//   passport.authenticate("oauth-bearer", { session: false }),
+//   async (req, res) => {
+//     try {
+//       if (!modelService) await initializeModel();
+//       console.log(`DELETE project/${req.params.id}`);
+//       const result = await modelService.deleteProject(req.params.id);
+//       if (result.status === COMMAND_STATUS.OK)
+//         res.status(200).send({ msg: result.msg, status: COMMAND_STATUS.OK });
+//       else if (result.status === COMMAND_STATUS.FAILED)
+//         res
+//           .status(400)
+//           .send({ msg: result.msg, status: COMMAND_STATUS.FAILED });
+//       else if (result.status === COMMAND_STATUS.NOTFOUND)
+//         res
+//           .status(404)
+//           .send({ msg: result.msg, status: COMMAND_STATUS.NOTFOUND });
+//     } catch (ex) {
+//       res
+//         .status(500)
+//         .send({ msg: ex.toString(), status: COMMAND_STATUS.FAILED });
+//     }
+//   }
+// );
 
-        project = await modelService.updateProject(project);
-      } else {
-        if (project.locked) project.lockedBy = req.authInfo.name;
-        if (project.archived) project.archivedBy = req.authInfo.name;
-        project = await modelService.createProject(project);
+app.post(
+  "/api/ModelService/file",
+  passport.authenticate("oauth-bearer", { session: false }),
+  async (req, res) => {
+
+    function fromBinary(encoded) {
+      let binary = atob(encoded)
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < bytes.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
       }
+      return String.fromCharCode(...new Uint16Array(bytes.buffer));
+    }
 
-      res.status(200).send(project);
+    try {
+      if (!fileService) await initializeFileService();
+      const {fileData,name,sliceNumber,totalSlices,datasetType} = req.body      
+      const encoded = fileData.slice("data:application/octet-stream;base64,".length,fileData.length)      
+      await fileService.sendBlock(datasetType,encoded,name,sliceNumber,totalSlices)      
+      res.status(200).send({});
     } catch (ex) {
       console.log(ex);
       res.status(500).send({ error: ex });
-    }
-  }
-);
-
-app.get(
-  "/api/ModelService/categories",
-  passport.authenticate("oauth-bearer", { session: false }),
-  async (req, res) => {
-    try {
-      if (!modelService) await initializeModel();
-      let categories = await modelService.queryCategories();
-
-      res.status(200).send(categories);
-    } catch (ex) {
-      console.log(ex);
-      res.status(500).send({ error: ex });
-    }
-  }
-);
-
-
-app.delete(
-  "/api/ModelService/project/:id",
-  passport.authenticate("oauth-bearer", { session: false }),
-  async (req, res) => {
-    try {
-      if (!modelService) await initializeModel();
-      console.log(`DELETE project/${req.params.id}`);
-      const result = await modelService.deleteProject(req.params.id);
-      if (result.status === COMMAND_STATUS.OK)
-        res.status(200).send({ msg: result.msg, status: COMMAND_STATUS.OK });
-      else if (result.status === COMMAND_STATUS.FAILED)
-        res
-          .status(400)
-          .send({ msg: result.msg, status: COMMAND_STATUS.FAILED });
-      else if (result.status === COMMAND_STATUS.NOTFOUND)
-        res
-          .status(404)
-          .send({ msg: result.msg, status: COMMAND_STATUS.NOTFOUND });
-    } catch (ex) {
-      res
-        .status(500)
-        .send({ msg: ex.toString(), status: COMMAND_STATUS.FAILED });
     }
   }
 );

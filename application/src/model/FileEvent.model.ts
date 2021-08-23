@@ -1,12 +1,12 @@
 import Debug from "debug";
 import { DataTypes } from "sequelize";
-const { v4: uuid } = require("uuid");
+import { v4 as uuid } from "uuid"
 
 const debug = Debug("ModelService");
 
-export const ProjectFactory = async (sequelize: any, config: any) => {
-  const Project = sequelize.define(
-    "Projects",
+export const FileEventFactory = async (sequelize: any, config: any) => {
+  const FileEvent = sequelize.define(
+    "FileEvents",
     {
       id: {
         type: DataTypes.STRING,
@@ -21,49 +21,25 @@ export const ProjectFactory = async (sequelize: any, config: any) => {
         allowNull: false,
         defaultValue: "Active",
       },
-      locked: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-      archived: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-      context: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      updatedBy: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       createdBy: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      lockedBy: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      archivedBy: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
     },
     {
       schema: config.schema,
-      tableName: "Projects",
+      tableName: "FileEvents",
       timestamps: true,
     }
   );
 
   if (config.RESYNC === "true") {
-    await Project.sync({ force: config.force });
+    await FileEvent.sync({ force: config.force });
   }
 
   async function create(data: any) {
     if (!data.id) data.id = uuid();
-    const create = await Project.create(data);
+    const create = await FileEvent.create(data);
     if (data.Categories) {
       await create.setCategories(data.Categories.map((c: any) => c.id));
       await create.save();
@@ -72,38 +48,38 @@ export const ProjectFactory = async (sequelize: any, config: any) => {
     return create;
   }
   async function upsert(data: any) {
-    var proj = await get(data.id);
-    if (!proj) return create(data);
-    await proj.update(data);
+    var filevent = await get(data.id);
+    if (!filevent) return create(data);
+    await filevent.update(data);
     
-    await proj.save();
-    return proj;
+    await filevent.save();
+    return filevent;
   }
 
   async function update(data: any) {
     debug(data);
-    await Project.build(data).save();
+    await FileEvent.build(data).save();
   }
 
   async function get(id = "") {
     const where = { id };
-    return Project.findOne({ where } );
+    return FileEvent.findOne({ where } );
   }
 
   async function queryCount(where = {}) {
-    const result = await Project.count({ where });
+    const result = await FileEvent.count({ where });
     return result;
   }
 
   async function query(where = {}) {
     debug("Query");
     debug(where);
-    return Project.findAll({ where });
+    return FileEvent.findAll({ where });
   }
 
   async function destroy(id = "") {
     try {
-      return Project.destroy({ where: { id } });
+      return FileEvent.destroy({ where: { id } });
     } catch (e) {
       console.log(e);
       return 0;
@@ -111,7 +87,7 @@ export const ProjectFactory = async (sequelize: any, config: any) => {
   }
 
   return {
-    Project,
+    FileEvent,
     create,
     update,
     get,

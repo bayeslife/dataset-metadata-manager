@@ -42,16 +42,19 @@ module.exports = (env) => {
       rules: [
         {
           test: /\.css$/,
+          include: path.resolve(__dirname, 'src'),
           use: 'css-loader',
         },
         {
           test: /\.tsx?$/,
+          include: [ path.resolve(__dirname, 'src'), path.resolve(__dirname, '../application/src') ],
           use: 'ts-loader',
           exclude: /node_modules/,
         },
         {
           test: /\.m?js/,
           type: 'javascript/auto',
+          include: path.resolve(__dirname, 'src'),
           resolve: {
             fullySpecified: false,
           },
@@ -59,16 +62,18 @@ module.exports = (env) => {
         {
           test: /\.jsx?$/,
           loader: require.resolve('babel-loader'),
+          include: [ path.resolve(__dirname, 'src'), path.resolve(__dirname, '../application/src') ],
           options: {
             presets: [require.resolve('@babel/preset-react')],
           },
         },
-        {
-          test: /\.md$/,
-          loader: 'raw-loader',
-        },
+        // {
+        //   test: /\.md$/,
+        //   loader: 'raw-loader',
+        // },
         {
           test: /\.(png|svg|jpg|gif)$/,
+          include: path.resolve(__dirname, 'src/assets'),
           loader: 'file-loader',
           options: {
             publicPath: 'images',
@@ -87,8 +92,7 @@ module.exports = (env) => {
           ApplicationFrameRemote: `ApplicationFrame@${APPFRAME_DOMAIN}/remoteEntry.js`,                
           StyleManagementRemote: `StyleManagement@${STYLE_DOMAIN}/remoteEntry.js`,        
         },
-        exposes: {          
-          "./ProjectFactory": "./src/shared/ProjectFactory.shared",          
+        exposes: {           
         },
         shared: {
           ...deps,

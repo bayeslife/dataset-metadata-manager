@@ -35,8 +35,13 @@ declare interface ITokenComponentProps {
   config: IMSALConfiguration
 }
 
+import AureconLogo from '../assets/logo.png'
+
 // eslint-disable-next-line
 export const Layout = (props: any): JSX.Element => {
+
+  const Logo = <img src={AureconLogo}></img>
+
   const handleNavbarClick = (url: string, hash: boolean) => {
     if (hash) window.location.hash = url
     //else openInNewTab(url)
@@ -44,6 +49,7 @@ export const Layout = (props: any): JSX.Element => {
 
   const links: IMenuLink[] = []
   links.push({ label: 'Upload', path: '/Upload', match: /^\/upload/ })
+  links.push({ label: 'History', path: '/History', match: /^\/history/ })
   
   const actions: IMenuAction[] = []
   actions.push({
@@ -56,7 +62,7 @@ export const Layout = (props: any): JSX.Element => {
 
   return (
     <div className='layoutContainer'>
-      <RemoteMenu links={links} actions={actions}>
+      <RemoteMenu logo={Logo} links={links} actions={actions}>
         <RemoteToken config={msalConfig} cssClass={'button is-small is-text is-navbar'} />
       </RemoteMenu>
       {props.children}

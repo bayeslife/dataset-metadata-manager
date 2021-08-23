@@ -2,7 +2,7 @@ import Debug from "debug";
 import { Sequelize } from "sequelize";
 const debug = Debug("service");
 
-import { ProjectFactory } from "./Project.model";
+import { FileEventFactory } from "./FileEvent.model";
 
 export const ModelFactory = async (config: any) => {
   debug("Model Factory");
@@ -27,14 +27,14 @@ export const ModelFactory = async (config: any) => {
     // timezone: 'utc'
   });
 
-  const Project = await ProjectFactory(sequelize, config);
+  const FileEvent = await FileEventFactory(sequelize, config);
   
   function close() {
     sequelize.close();
   }
 
   return {
-    Project,
+    FileEvent,
     close,
   };
 };

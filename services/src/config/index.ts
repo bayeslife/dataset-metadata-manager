@@ -52,9 +52,7 @@ export const config =  {
   
   testMode: false, // use this to turn off authentication    
   storageAccount: {
-    accountName: process.env.STORAGE_ACCOUNTNAME,
-    accessKey: process.env.STORAGE_ACCESSKEY,
-    bucket: process.env.STORAGE_BUCKET || 'projects'
+    connectionString: process.env.FILESTORAGE_CONNECTION_STRING,    
   },
   style: {
     endpoint: process.env.STYLE_ENDPOINT || 'https://localhost:3011'
