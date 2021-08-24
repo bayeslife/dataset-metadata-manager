@@ -6,8 +6,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
-import React, {FC} from 'react';
-
+import React, {FC,useEffect, useState} from 'react';
+import {ICommandResult} from '../../../application/src/types'
+import { getDataSets} from '../contract/api'
+import {COMMAND_STATUS} from '../../../application/src/domain'
 interface IDataSetTypeSelect {
   callback: (metadata:any)=>void
 }
@@ -17,15 +19,27 @@ export const DataSetTypeSelection : FC<IDataSetTypeSelect> = (options: any)=>{
     const {callback} = options
 
     const [datasetType, datasetTypeSet] = React.useState<string>('');
+    const [hash,hashSet]= useState(1)
 
-    const datasetTypes = ["LessonsLearned","WholeOflife"]    
+    const [datasetTypes, datasetTypesSet] = React.useState<string[]>([]);    
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val :string = event.target.value as string
         datasetTypeSet(val);   
-        callback({DatasetType: val})
+        callback({datasetType: val})
         event.preventDefault();
       };
+      
+      useEffect(()=>{
+        const getData = async()=>{
+          const result: ICommandResult = await getDataSets()
+          if(result && result.status===COMMAND_STATUS.OK){
+            console.log(result)
+            datasetTypesSet(result.entity)
+          }
+        }
+        getData()
+      },[hash])
     
       return <Grid container spacing={3}>
                 <Grid item xs={12}> 

@@ -2,14 +2,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import React, { FC, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import {postFileSlice, createFileEvent } from '../contract/api'
-
+import md5 from 'md5'
+import { rejects } from 'assert';
 interface IUploaderProps {
-  metadata: any
+  datasetType: string,
+  callback: (filename:string,blobId:string)=>void
 }
 
 export const Uploader : FC<IUploaderProps> = (props)=>{
 
-    const {metadata} = props
+    const {datasetType,callback} = props
     
     var SLICE_SIZE = 1 * 1000 * 1024;
 
@@ -21,17 +23,39 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
     const [total,totalSet] = useState<number>(0)  
 
     const progressPercentage = total ?  Math.floor(100*(progress/(total-1))) : 0
-        
-    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        uploadingSet(true)
-        const blobId = uuid()
+    
+    const getFileSignature = (signatureBlob: Blob) : Promise<string> =>{
+      return new Promise((resolve,reject)=>{
+        const reader = new FileReader()
+            reader.onload = function(event:any){
+              if(event && event.target){
+                const fileDataUrl = event.target.result as string
+                const signature = fileDataUrl.replace('data:application/octet-stream;base64.','')
+                resolve(signature)
+              } else
+                reject()
+            };
+        reader.readAsDataURL(signatureBlob)
+      })
+    }
+
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        uploadingSet(true)        
         try {
           if (e.target && e.target.files && e.target.files.length > 0) {
             
             const file = e.target.files[0]
-    
+
+            let extension = ''
+            if(file.name.lastIndexOf('.')>=0){
+              extension = file.name.substring(file.name.lastIndexOf('.'))
+            }
+
+            const signatureBlob = file.slice(0,1024)
+            const signature = await getFileSignature(signatureBlob)
+            const fileHash = md5(signature)              
+            const storedFileName=`${fileHash}${extension}`
             const totalSlices = Math.floor(file.size/SLICE_SIZE)+  (file.size % SLICE_SIZE ? 1 : 0)
-            totalSet(totalSlices)
                   
             const uploadSlice = (start:number,sliceNumber:number)=>{
               const fileReader = new FileReader()
@@ -41,13 +65,13 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
                       
               const handleFile = async (e: ProgressEvent<FileReader>) => {
                 if (e.target && e.target.result) {
-                  const content = e.target.result
-                  await postFileSlice(metadata.DatasetType,content,blobId,sliceNumber,totalSlices)              
+                  const content = e.target.result                  
+                  await postFileSlice(datasetType,content,storedFileName,sliceNumber,totalSlices)              
                   if ( next_slice < file.size ) {                
                     uploadSlice(next_slice,sliceNumber+1)
                     progressSet(sliceNumber)
                   }else {
-                    await createFileEvent(file.name,blobId) 
+                    callback(file.name,storedFileName) 
                     totalSet(-1)
                     hashSet(hash+1)
                     uploadingSet(false)
@@ -68,7 +92,7 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
     if(uploading)
       return <CircularProgress variant="determinate" value={progressPercentage} />
     else 
-     return <input type='file' onChange={(e) => handleUpload(e)} value={value} /> 
+     return <input type='file' onChange={(e) => handleUpload(e)} disabled={!datasetType} value={value} /> 
 }
 
 

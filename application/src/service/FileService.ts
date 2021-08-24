@@ -1,7 +1,9 @@
 import Debug from "debug";
 import { IFileService} from '../types'
 import {BlobServiceClient,ContainerClient, BlockBlobClient,BlockBlobTier} from '@azure/storage-blob'
+import fs from 'fs'
 const debug = Debug("FileService");
+
 
 export const FileService = async (config:any) : Promise<IFileService> => {
   
@@ -36,6 +38,7 @@ export const FileService = async (config:any) : Promise<IFileService> => {
         }
         debug(`Commiting Blocks ${blocks}`)
         blockBlobClient.commitBlockList(blocks)
+        //blockBlobClient.setMetadata()
       }
     }
   }
@@ -43,14 +46,24 @@ export const FileService = async (config:any) : Promise<IFileService> => {
   const download =async (datasetType: string, reference:string) : Promise<String | null>  => {    
     if(!blobServiceClient) return null
     
-    const containerClient = blobServiceClient.getContainerClient(datasetType);      
+    const containerClient = blobServiceClient.getContainerClient(datasetType);
     const blockBlobClient : BlockBlobClient = containerClient.getBlockBlobClient(reference);
     const binaryBuffer: Buffer = await blockBlobClient.downloadToBuffer()
-    return binaryBuffer.toString('base64')
+    return binaryBuffer.toString('utf-8')    
+  }
+
+  const downloadToFile = async (localFilePath:string, datasetType: string, reference:string) : Promise<void> => {    
+      if(blobServiceClient){
+        const containerClient = blobServiceClient?.getContainerClient(datasetType);  
+        const pageBlobClient = containerClient.getPageBlobClient(reference)            
+        await pageBlobClient.downloadToFile(localFilePath)
+      }else
+        throw "No blob service client"
   }
 
   return {   
     download, 
+    downloadToFile,
     sendBlock
   };
 };

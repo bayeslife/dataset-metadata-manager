@@ -4,9 +4,11 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { User, ProjectSelect, Uploader, DataSetTypeSelection } from '../components'
+import { User, UserProfile, ProjectSelect, Uploader, DataSetTypeSelection } from '../components'
+import {postFileSlice, createFileEvent } from '../contract/api'
+import { IMetaData } from '../../../application/src/types';
 
-export interface IMetaDataDefinition {
+export interface IMetaDataSectionDefinition {
   name: string
   about: string
   component: React.ReactElement
@@ -17,23 +19,24 @@ export const Upload: FC = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
   const [path,pathSet]= useState()
 
-  const [metadata,metadataSet] = useState<any>()
+  const [metadata,metadataSet] = useState<IMetaData>({})
 
-  const handleUpload = ()=> {    
-    window.postMessage({ 
-      type: 'upload'     
-    },'*')
-  }
+  
+  // const handleUpload = ()=> {    
+  //   window.postMessage({ 
+  //     type: 'upload'     
+  //   },'*')
+  // }
 
-  const handleChooseFile = ()=> {    
-    window.postMessage({ 
-      type: 'show-chooser'     
-    },'*')
-  }
+  // const handleChooseFile = ()=> {    
+  //   window.postMessage({ 
+  //     type: 'show-chooser'     
+  //   },'*')
+  // }
 
-  const handleFileChange=(event:any)=>{    
-    pathSet(event.target.value)
-  }
+  // const handleFileChange=(event:any)=>{    
+  //   pathSet(event.target.value)
+  // }
 
   const handleProjectChange=()=>{
 
@@ -44,12 +47,20 @@ export const Upload: FC = () => {
   };
 
   const callback = (update:any)=>{
-    metadataSet({...metadata,...update})    
+    if(update){
+      const changes = Object.keys(update).map((key:string)=>update[key]!==(metadata as any)[key]).filter(n=>n)      
+      if(changes.length>0)
+        metadataSet({...metadata,...update})    
+    }
   }
 
-  console.log(metadata)
-
-  const metadataDefinitions : IMetaDataDefinition [] = [
+  const handleFileUpload= async (filename:string,blobId:string)=>{
+    const newMetaData = {...metadata,filename,blobId}
+    metadataSet(newMetaData)    
+    await createFileEvent(newMetaData)
+  }
+  
+  const metadataDefinitions : IMetaDataSectionDefinition [] = [
     {
       name: "Data Set Type",
       about: "Data Set Type",
@@ -92,9 +103,11 @@ export const Upload: FC = () => {
     {
       name: "Upload",
       about: "Upload file(s)",
-      component: <Uploader metadata={metadata}/>
+      component: <Uploader datasetType={metadata?.datasetType||''} callback={handleFileUpload}/>
     }
   ]
+
+  callback(UserProfile())
 
   return (
     <div className='pageContainer'>
@@ -102,7 +115,7 @@ export const Upload: FC = () => {
         <h1>Upload a Data Set</h1></div>
       <div className='pageContent'>
 
-        {metadataDefinitions.map((md:IMetaDataDefinition)=>{
+        {metadataDefinitions.map((md:IMetaDataSectionDefinition)=>{
             return <Accordion expanded={expanded === md.name} onChange={handleChange(md.name)}>
               <AccordionSummary            
                 expandIcon={<ExpandMoreIcon />}

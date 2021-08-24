@@ -127,9 +127,18 @@ export async function postFileSlice(datasetType:string,content: string| ArrayBuf
   })
 }
 
-export async function createFileEvent(name: string,blobId:string) {
+export async function createFileEvent(metadata:any) {
   const localToken = window.localStorage.getItem('AccessToken')
-  return service.post('/ModelService/fileevent', {name,blobId}, {
+  return service.post('/ModelService/fileevents', metadata, {
     headers: { Authorization: `Bearer ${localToken}` },
+  })
+}
+
+
+export async function getDataSets() : Promise<ICommandResult> { 
+   const localToken = window.localStorage.getItem('AccessToken')
+  return fetch("https://quartile-one.gitlab.io/capabilities/datasets/datasetcatalogue/datasetnames.json", { }).then(async (res: Response)=>{
+    const json = await res.json()
+    return { status: COMMAND_STATUS.OK, msg: '', entity: json }
   })
 }

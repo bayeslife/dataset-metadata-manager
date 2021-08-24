@@ -12,6 +12,11 @@ import { IFileEvent } from "../../application/src/types";
 import { COMMAND_STATUS } from "../../application/src/domain";
 import { IFileService } from '../../application/src/types'
 import { FileService } from "../../application/src/service/FileService";
+import path from 'path'
+import fs from 'fs'
+import { IMetaData } from "../../application/src/types";
+import { EventService } from "../../application/src/service/EventService";
+import { IEventService} from '../../application/src/types'
 
 const debug = Debug("ModelService");
 
@@ -35,6 +40,13 @@ const initializeFileService = async () => {
 };
 initializeFileService();
 
+let eventService : IEventService = null;
+const initializeEventService = async () => {
+  if(!eventService)
+    eventService = await EventService(config.eventhub)
+};
+initializeFileService();
+
 // app.get(
 //   "/api/ModelService/project/:id",
 //   passport.authenticate("oauth-bearer", { session: false }),
@@ -52,37 +64,38 @@ initializeFileService();
 //   }
 // );
 
-// app.get(
-//   "/api/ModelService/projects",
-//   passport.authenticate("oauth-bearer", { session: false }),
-//   async (req, res) => {
-//     if (!modelService) await initializeModel();
+app.get(
+  "/api/ModelService/:dataset/:reference/files/:filename",
+  //passport.authenticate("oauth-bearer", { session: false }),
+  async (req, res) => {
+    if (!modelService) await initializeModel();
 
-//     const where = {};
-//     const context = req.headers["context"];
-//     if (context) {
-//       Object.assign(where, { context });
-//     }
+    let dataset = req.params.dataset
+    let reference = req.params.reference
 
-//     let projects = await modelService.queryProjects(where);
-
-//     res.status(200).send(projects);
-//   }
-// );
+    const content = await fileService.download(dataset,reference)      
+      if(content){
+        res.setHeader('Content-Length', content.length)
+        res.setHeader('Content-Type', 'text/csv')         
+        res.status(200).send(content)
+    } else {
+        debug(`blob ${dataset} ${reference} doesnt exist`)
+        res.sendStatus(404)
+    }
+  })
 
 app.post(
   "/api/ModelService/fileevents",
   passport.authenticate("oauth-bearer", { session: false }),
   async (req, res) => {
     try {
-      if (!modelService) await initializeModel();
+      if (!eventService) await initializeEventService();
 
-      var fileevent: IFileEvent = req.body;
-      fileevent.createdBy = fileevent.createdBy || req.authInfo.name;      
-        
-      //fileevent = await modelService.createFileEvent(fileevent);
+      const metadata: IMetaData = req.body;
+              
+      await eventService.produce([metadata]);
       
-      res.status(200).send(fileevent);
+      res.status(200).send(metadata);
     } catch (ex) {
       console.log(ex);
       res.status(500).send({ error: ex });

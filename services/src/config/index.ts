@@ -50,6 +50,11 @@ export const config =  {
   database,
   seed: process.env.SEED === 'true', //Seed the database
   
+  eventhub: {
+    connectionString: process.env.EVENTHUB_CONNECTION_STRING,    
+    eventHubName: process.env.EVENTHUB_NAME || ''
+  },
+  
   testMode: false, // use this to turn off authentication    
   storageAccount: {
     connectionString: process.env.FILESTORAGE_CONNECTION_STRING,    
