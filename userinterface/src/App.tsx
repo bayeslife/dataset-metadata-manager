@@ -14,7 +14,7 @@ import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
 function App() {
   const [stylePath, stylePathSet] = useState('aurecon-designsystem.style.css')
   //const [styleUrl, styleUrlSet] = useState<string | null>('https://quartile-one.gitlab.io/projects/gpc/webapplication/capability-style-management/')
-  const [styleUrl, styleUrlSet] = useState<string | null>('https://localhost:3011')
+  const [styleUrl, styleUrlSet] = useState<string | null>('https://stacwebstyle.z8.web.core.windows.net/')
 
   const onSelect = (value: string) => {
     stylePathSet(value)
