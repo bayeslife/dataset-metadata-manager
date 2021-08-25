@@ -3,7 +3,7 @@ import { describe, Try } from "riteway";
 import { getModel } from "../src/model";
 import { ModelService } from "../src/service";
 import { Log } from "../src/persistentlog";
-process.env.TEST_DB_LOCAL = "true";
+//process.env.TEST_DB_LOCAL = "true";
 import { config } from "./testConfig";
 
 describe("Simple Component", async (assert) => {
@@ -15,7 +15,7 @@ describe("Simple Component", async (assert) => {
     const log = Log();
     await modelService.seed(log);
 
-    const Projects = await modelService.queryProjects();
+    const filevents = await modelService.queryFileEvents();
 
     assert({
       given: "no property filter",
