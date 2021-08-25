@@ -11,11 +11,14 @@ export interface ICommandResult {
 
 
 export type IFileEvent = {
+  id: string
   type: string,
-  id:string,
-  description: string;  
-  createdBy: string;
-  createdAt: Date;  
+  datasetType: string
+  blobId:string,
+  filename: string;    
+  username: string;
+  createdBy: string
+  createdAt: Date;
 }
 
 
@@ -27,11 +30,18 @@ export interface IFileService {
 
 
 export interface IMetaData {
+  name?: string
+  username?: string
   datasetType?: string
   filename?:string
   blobId?: string
   project?:string
   customer?:string
+}
+
+export interface IDataSetDefinition {
+  name?: string
+  metadata: any
 }
 
 export interface IEventService {  

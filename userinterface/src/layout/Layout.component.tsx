@@ -50,6 +50,7 @@ export const Layout = (props: any): JSX.Element => {
   const links: IMenuLink[] = []
   links.push({ label: 'Upload', path: '/Upload', match: /^\/upload/ })
   links.push({ label: 'History', path: '/History', match: /^\/history/ })
+  links.push({ label: 'DataSets', path: '/DataSets', match: /^\/datasets/ })
   
   const actions: IMenuAction[] = []
   actions.push({

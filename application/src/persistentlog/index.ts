@@ -12,8 +12,11 @@ const id = (): string => {
 
 const DEMO_FILEEVENT : IFileEvent = {
   id: "FY2021",
-  type: FILEEVENT_TYPE,  
-  description: "Port FY2021",  
+  type: FILEEVENT_TYPE,
+  datasetType: 'testdataset',
+  blobId: "asdfasf",
+  filename: "Port FY2021",  
+  username: 'philT',
   createdBy: "Phil",
   createdAt: new Date(),  
 }

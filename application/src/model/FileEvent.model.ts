@@ -1,6 +1,5 @@
 import Debug from "debug";
 import { DataTypes } from "sequelize";
-import { v4 as uuid } from "uuid"
 
 const debug = Debug("ModelService");
 
@@ -11,20 +10,31 @@ export const FileEventFactory = async (sequelize: any, config: any) => {
       id: {
         type: DataTypes.STRING,
         primaryKey: true,
+      },      
+      datasetType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },      
+      filename: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      blobId: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "Active",
-      },
-      createdBy: {
+      },   
+      username: {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      createAt:{
+        type: DataTypes.DATE,
+        allowNull: false,
+      },   
     },
     {
       schema: config.schema,
@@ -37,8 +47,7 @@ export const FileEventFactory = async (sequelize: any, config: any) => {
     await FileEvent.sync({ force: config.force });
   }
 
-  async function create(data: any) {
-    if (!data.id) data.id = uuid();
+  async function create(data: any) {    
     const create = await FileEvent.create(data);
     if (data.Categories) {
       await create.setCategories(data.Categories.map((c: any) => c.id));
@@ -74,12 +83,16 @@ export const FileEventFactory = async (sequelize: any, config: any) => {
   async function query(where = {}) {
     debug("Query");
     debug(where);
-    return FileEvent.findAll({ where });
+    return FileEvent.findAll({ where,
+      order: [['createdAt', 'DESC']]
+     });
   }
 
   async function destroy(id = "") {
     try {
-      return FileEvent.destroy({ where: { id } });
+      return FileEvent.destroy({ 
+        where: { id }         
+      });
     } catch (e) {
       console.log(e);
       return 0;

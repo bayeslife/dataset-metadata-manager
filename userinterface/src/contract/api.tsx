@@ -75,43 +75,6 @@ export async function getApplicationConfig(): Promise<any> {
   })
 }
 
-// export async function createProject(data: object) {
-//   const localToken = window.localStorage.getItem('AccessToken')
-//   return service.post('/ModelService/projects', data, {
-//     headers: { Authorization: `Bearer ${localToken}` },
-//   })
-// }
-
-// export async function queryProjects(context?: string): Promise<IFileEvent[]> {
-//   const localToken = window.localStorage.getItem('AccessToken')
-//   const localContext = context || window.localStorage.getItem('context') || TERMINAL_DOMAIN
-//   return service.get(`/ModelService/projects`, {
-//     headers: {
-//       context: localContext,
-//       Authorization: `Bearer ${localToken}`,
-//     },
-//   })
-// }
-
-// export async function deleteProject(id: string): Promise<ICommandResult> {
-//   const localToken = window.localStorage.getItem('AccessToken')
-//   try {
-//     return service.delete(`/ModelService/project/${id}`, {
-//       headers: { Authorization: `Bearer ${localToken}` },
-//     })
-//   } catch (e) {
-//     console.log(e)
-//     return {msg:e, status: COMMAND_STATUS.FAILED}
-//   }
-// }
-
-// export async function getProject(id: string): Promise<IFileEvent> {
-//   const localToken = window.localStorage.getItem('AccessToken')
-//   return service.get(`/ModelService/project/${id}`, {
-//     headers: { Authorization: `Bearer ${localToken}` },
-//   })
-// }
-
 export async function postFileSlice(datasetType:string,content: string| ArrayBuffer,name: string,sliceNumber: number, totalSlices: number): Promise<ICommandResult> {
   const localToken = window.localStorage.getItem('AccessToken')    
   return service.post(`/ModelService/file`, {
@@ -134,11 +97,17 @@ export async function createFileEvent(metadata:any) {
   })
 }
 
-
 export async function getDataSets() : Promise<ICommandResult> { 
    const localToken = window.localStorage.getItem('AccessToken')
-  return fetch("https://quartile-one.gitlab.io/capabilities/datasets/datasetcatalogue/datasetnames.json", { }).then(async (res: Response)=>{
+  return fetch("https://quartile-one.gitlab.io/capabilities/datasets/datasetcatalogue/datasets.json", { }).then(async (res: Response)=>{
     const json = await res.json()
     return { status: COMMAND_STATUS.OK, msg: '', entity: json }
+  })
+}
+
+export async function getFileEvents() : Promise<ICommandResult> { 
+  const localToken = window.localStorage.getItem('AccessToken')  
+  return service.get(`/ModelService/fileevents`, {
+    headers: { Authorization: `Bearer ${localToken}` },
   })
 }

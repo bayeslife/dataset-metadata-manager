@@ -1,22 +1,17 @@
-import Debug from "debug";
-import { Log } from "../../application/src/persistentlog";
-import { ModelService } from "../../application/src/service";
-import { getModel } from "../../application/src/model";
-import express from "express";
-import passport from "passport";
 import { createAzureFunctionHandler } from "azure-function-express";
 import bodyparser from "body-parser";
-import { config } from "../src/config";
-import { authorizationStrategy } from "../src/auth";
-import { IFileEvent } from "../../application/src/types";
+import Debug from "debug";
+import express from "express";
+import passport from "passport";
 import { COMMAND_STATUS } from "../../application/src/domain";
-import { IFileService } from '../../application/src/types'
-import { FileService } from "../../application/src/service/FileService";
-import path from 'path'
-import fs from 'fs'
-import { IMetaData } from "../../application/src/types";
+import { getModel } from "../../application/src/model";
+import { Log } from "../../application/src/persistentlog";
+import { ModelService } from "../../application/src/service";
 import { EventService } from "../../application/src/service/EventService";
-import { IEventService} from '../../application/src/types'
+import { FileService } from "../../application/src/service/FileService";
+import { IEventService, IFileService, IMetaData } from '../../application/src/types';
+import { authorizationStrategy } from "../src/auth";
+import { config } from "../src/config";
 
 const debug = Debug("ModelService");
 
@@ -47,22 +42,6 @@ const initializeEventService = async () => {
 };
 initializeFileService();
 
-// app.get(
-//   "/api/ModelService/project/:id",
-//   passport.authenticate("oauth-bearer", { session: false }),
-//   async (req, res) => {
-//     try {
-//       if (!modelService) await initializeModel();
-//       const id = req.params.id;
-//       let project = await modelService.getProject(id);
-//       if (project) res.status(200).send(project);
-//       else res.status(500);
-//     } catch (ex) {
-//       console.log(ex);
-//       res.status(500).send({ error: ex });
-//     }
-//   }
-// );
 
 app.get(
   "/api/ModelService/:dataset/:reference/files/:filename",
@@ -84,16 +63,42 @@ app.get(
     }
   })
 
+
+app.get(
+    "/api/ModelService/fileevents",
+    //passport.authenticate("oauth-bearer", { session: false }),
+    async (req, res) => {
+      if (!modelService) await initializeModel();
+      let content = await modelService.queryFileEvents({})
+      if(content && !Array.isArray(content)){
+        content = [content]
+      }
+      res.status(200).send({
+        status: COMMAND_STATUS.OK,entity: content,msg: "success"
+      })
+    })
+
 app.post(
   "/api/ModelService/fileevents",
   passport.authenticate("oauth-bearer", { session: false }),
   async (req, res) => {
     try {
       if (!eventService) await initializeEventService();
+      if (!modelService) await initializeModel();
 
       const metadata: IMetaData = req.body;
               
       await eventService.produce([metadata]);
+
+      await modelService.createFileEvent({
+        datasetType: metadata.datasetType,
+        filename: metadata.filename,
+        blobId: metadata.blobId,
+        name: metadata.name,
+        username: metadata.username,
+        createAt: Date.now()
+
+      })
       
       res.status(200).send(metadata);
     } catch (ex) {
@@ -102,32 +107,6 @@ app.post(
     }
   }
 );
-
-// app.delete(
-//   "/api/ModelService/project/:id",
-//   passport.authenticate("oauth-bearer", { session: false }),
-//   async (req, res) => {
-//     try {
-//       if (!modelService) await initializeModel();
-//       console.log(`DELETE project/${req.params.id}`);
-//       const result = await modelService.deleteProject(req.params.id);
-//       if (result.status === COMMAND_STATUS.OK)
-//         res.status(200).send({ msg: result.msg, status: COMMAND_STATUS.OK });
-//       else if (result.status === COMMAND_STATUS.FAILED)
-//         res
-//           .status(400)
-//           .send({ msg: result.msg, status: COMMAND_STATUS.FAILED });
-//       else if (result.status === COMMAND_STATUS.NOTFOUND)
-//         res
-//           .status(404)
-//           .send({ msg: result.msg, status: COMMAND_STATUS.NOTFOUND });
-//     } catch (ex) {
-//       res
-//         .status(500)
-//         .send({ msg: ex.toString(), status: COMMAND_STATUS.FAILED });
-//     }
-//   }
-// );
 
 app.post(
   "/api/ModelService/file",

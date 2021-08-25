@@ -33,9 +33,8 @@ export const DataSetTypeSelection : FC<IDataSetTypeSelect> = (options: any)=>{
       useEffect(()=>{
         const getData = async()=>{
           const result: ICommandResult = await getDataSets()
-          if(result && result.status===COMMAND_STATUS.OK){
-            console.log(result)
-            datasetTypesSet(result.entity)
+          if(result && result.status===COMMAND_STATUS.OK){            
+            datasetTypesSet(result.entity.map((ds:any)=>ds.name))
           }
         }
         getData()

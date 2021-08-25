@@ -112,11 +112,11 @@ export const Upload: FC = () => {
   return (
     <div className='pageContainer'>
       <div className='pageTitle'>
-        <h1>Upload a Data Set</h1></div>
+        <h2>Upload a Data Set or Data Set Component</h2></div>
       <div className='pageContent'>
 
         {metadataDefinitions.map((md:IMetaDataSectionDefinition)=>{
-            return <Accordion expanded={expanded === md.name} onChange={handleChange(md.name)}>
+            return <Accordion key={md.name} expanded={expanded === md.name} onChange={handleChange(md.name)}>
               <AccordionSummary            
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1bh-content"

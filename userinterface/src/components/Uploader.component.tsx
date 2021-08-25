@@ -3,11 +3,14 @@ import React, { FC, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import {postFileSlice, createFileEvent } from '../contract/api'
 import md5 from 'md5'
-import { rejects } from 'assert';
+import { azureBlobFolderNameTransform } from '../../../application/src/service/CloudService'
+
 interface IUploaderProps {
   datasetType: string,
   callback: (filename:string,blobId:string)=>void
 }
+
+
 
 export const Uploader : FC<IUploaderProps> = (props)=>{
 
@@ -65,8 +68,8 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
                       
               const handleFile = async (e: ProgressEvent<FileReader>) => {
                 if (e.target && e.target.result) {
-                  const content = e.target.result                  
-                  await postFileSlice(datasetType,content,storedFileName,sliceNumber,totalSlices)              
+                  const content = e.target.result                             
+                  await postFileSlice(azureBlobFolderNameTransform(datasetType),content,storedFileName,sliceNumber,totalSlices)              
                   if ( next_slice < file.size ) {                
                     uploadSlice(next_slice,sliceNumber+1)
                     progressSet(sliceNumber)
@@ -90,9 +93,15 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
     }
 
     if(uploading)
-      return <CircularProgress variant="determinate" value={progressPercentage} />
-    else 
-     return <input type='file' onChange={(e) => handleUpload(e)} disabled={!datasetType} value={value} /> 
+      return <CircularProgress variant="determinate" value={progressPercentage} />    
+    else {
+      return <div>
+          {!datasetType && <div className="error">Please select a Data Set Type</div>}
+          <input type='file' onChange={(e) => handleUpload(e)} disabled={!datasetType} value={value} /> 
+        </div>
+    }
+     
+       
 }
 
 
