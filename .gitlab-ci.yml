@@ -1,0 +1,48 @@
+stages:  
+  - build-static-site  
+  - deploy-static-site
+  - deploy-service
+
+deploy-service:
+  stage: deploy-service
+  image: docker:19.03.12
+  services:
+    - name: docker:19.03.12-dind
+  before_script:
+    - docker info
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_REGISTRY: "cntrdatasets.azurecr.io"
+    DOCKER_USERNAME: "cntrdatasets"
+    MODEL: "datasets-app-service"
+    VERSION: "0.1.1"
+  script:
+    - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build -t $DOCKER_REGISTRY/$MODEL:$VERSION .
+    - docker push $DOCKER_REGISTRY/$MODEL:$VERSION
+
+build-static-site:
+  image: node:15.12-alpine3.13
+  stage: build-static-site
+  variables:
+    BASE_URL: "/"
+  artifacts:
+    paths:
+    - userinterface/dist
+  script:
+    - cd userinterface
+    - npm install
+    - APPFRAME_DOMAIN="https://stacwebappframe.z8.web.core.windows.net" STYLE_DOMAIN="https://stacwebstyle.z8.web.core.windows.net" npm run build
+
+deploy-static-site:
+  image: mcr.microsoft.com/azure-cli
+  stage: deploy-static-site
+  needs: [build-static-site]
+  variables:
+    BASE_URL: "/"
+  artifacts:
+    paths:
+    - userinterface/dist/  
+  script:
+    - az storage blob delete-batch -s "\$web" --connection-string $AZURE_STORAGE_CONNECTION_STRING
+    - az storage blob upload-batch -d "\$web" -s userinterface/dist --connection-string $AZURE_STORAGE_CONNECTION_STRING  
