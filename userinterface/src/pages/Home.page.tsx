@@ -18,12 +18,12 @@ export const Home: FC = () => {
           <div className='login-content'>
             <h2>Welcome to the Data Collector </h2>
             <p>
-              This Aurecon application provides capabilities upload data set files.
+              This Aurecon application provides capabilities to upload data set or data set component files.
               </p>   
               <p>
-              Users select files, provide meta data and submit data sets.
-              </p>
-        
+              Users select files, provide meta data and submit data set files.
+              Meta Data on existing data sets are available.
+              </p>        
           <div className='login-content' />
         </div>      
       </div>
