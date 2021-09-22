@@ -1,5 +1,4 @@
-import { describe, Try } from "riteway";
-
+import { describe } from "riteway";
 import { getModel } from "../src/model";
 import { ModelService } from "../src/service";
 import { Log } from "../src/persistentlog";

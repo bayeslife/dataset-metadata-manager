@@ -21,9 +21,10 @@ export const DataSetTypeSelection : FC<IDataSetTypeSelect> = (options: any)=>{
     const [datasetType, datasetTypeSet] = React.useState<string>('');
     const [hash,hashSet]= useState(1)
 
-    const [datasetTypes, datasetTypesSet] = React.useState<string[]>([]);    
+    const [datasetTypes, datasetTypesSet] = React.useState<any[]>([]);    
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        console.log(event.target.value)
         const val :string = event.target.value as string
         datasetTypeSet(val);   
         callback({datasetType: val})
@@ -33,19 +34,23 @@ export const DataSetTypeSelection : FC<IDataSetTypeSelect> = (options: any)=>{
       useEffect(()=>{
         const getData = async()=>{
           const result: ICommandResult = await getDataSets()
-          if(result && result.status===COMMAND_STATUS.OK){            
-            datasetTypesSet(result.entity.map((ds:any)=>ds.name))
+          if(result && result.status===COMMAND_STATUS.OK){  
+                    
+            datasetTypesSet(result.entity.map((ds:any)=>{
+              return {id: ds.metadata.Id,name: ds.name}
+            }))
           }
         }
         getData()
       },[hash])
-    
+
+      
       return <Grid container spacing={3}>
                 <Grid item xs={12}> 
                     <TextField fullWidth select  label="Data Set Type" value={datasetType} onChange={handleChange} >
-                          {datasetTypes.map((name) => (
-                                <MenuItem key={name} value={name}>
-                                  {name}
+                          {datasetTypes.map((datasetType) => (
+                                <MenuItem key={datasetType.name} value={datasetType.id}>
+                                  {datasetType.name}
                                 </MenuItem>
                               ))}
                     </TextField>            

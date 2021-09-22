@@ -1,8 +1,8 @@
 stages:  
+  - deploy-service
   - build-static-site  
   - deploy-static-site
-  - deploy-service
-
+  
 deploy-service:
   stage: deploy-service
   image: docker:19.03.12

@@ -6,7 +6,7 @@ import md5 from 'md5'
 import { azureBlobFolderNameTransform } from '../../../application/src/service/CloudService'
 
 interface IUploaderProps {
-  datasetType: string,
+  datasetType: string,  
   callback: (filename:string,blobId:string)=>void
 }
 
@@ -23,7 +23,10 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
     const [uploading,uploadingSet] = useState(false)
 
     const [progress,progressSet] = useState<number>(0)
-    const [total,totalSet] = useState<number>(0)  
+    const [total,totalSet] = useState<number>(0) 
+    
+    const msalAccountStr = window.localStorage.getItem('msal-account')
+    const msalAccount = msalAccountStr ? JSON.parse(msalAccountStr): {name: ''} 
 
     const progressPercentage = total ?  Math.floor(100*(progress/(total-1))) : 0
     
@@ -69,7 +72,7 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
               const handleFile = async (e: ProgressEvent<FileReader>) => {
                 if (e.target && e.target.result) {
                   const content = e.target.result                             
-                  await postFileSlice(azureBlobFolderNameTransform(datasetType),content,storedFileName,sliceNumber,totalSlices)              
+                  await postFileSlice(azureBlobFolderNameTransform(datasetType),content,storedFileName,msalAccount.username,file.name,sliceNumber,totalSlices)              
                   if ( next_slice < file.size ) {                
                     uploadSlice(next_slice,sliceNumber+1)
                     progressSet(sliceNumber)

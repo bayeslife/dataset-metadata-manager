@@ -21,25 +21,7 @@ export const Upload: FC = () => {
 
   const [metadata,metadataSet] = useState<IMetaData>({})
 
-  
-  // const handleUpload = ()=> {    
-  //   window.postMessage({ 
-  //     type: 'upload'     
-  //   },'*')
-  // }
-
-  // const handleChooseFile = ()=> {    
-  //   window.postMessage({ 
-  //     type: 'show-chooser'     
-  //   },'*')
-  // }
-
-  // const handleFileChange=(event:any)=>{    
-  //   pathSet(event.target.value)
-  // }
-
   const handleProjectChange=()=>{
-
   }
 
   const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
@@ -62,8 +44,8 @@ export const Upload: FC = () => {
   
   const metadataDefinitions : IMetaDataSectionDefinition [] = [
     {
-      name: "Data Set Type",
-      about: "Data Set Type",
+      name: "Data Set",
+      about: "Data Set",
       component: <DataSetTypeSelection callback={callback}/> 
     }, 
     {
@@ -108,6 +90,7 @@ export const Upload: FC = () => {
   ]
 
   callback(UserProfile())
+
 
   return (
     <div className='pageContainer'>

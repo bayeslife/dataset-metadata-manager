@@ -19,15 +19,25 @@ export const FileService = async (config:any) : Promise<IFileService> => {
     }
     createClient()
 
-  const sendBlock = async (datasetType: string, content:string, name: string, sliceNumber: number, totalSlices: number)=> {    
+  const sendBlock = async (datasetType: string, content:string, name: string, sliceNumber: number, totalSlices: number,metadata:any)=> {    
     if(blobServiceClient){
-      const containerClient = blobServiceClient.getContainerClient(datasetType.toLowerCase());      
+      const container = datasetType.toLowerCase()
+
+      try {
+        if(sliceNumber===0){
+          await blobServiceClient.createContainer(container)
+        }          
+      }catch(err){
+        debug(err)
+      }
+
+      const containerClient = blobServiceClient.getContainerClient(container)
       let prefix = 'aaaaaaaa'
       let sliceNumberStr = ''+sliceNumber
+      debug(`sendBlock: ${content.length} ${container} ${name} ${sliceNumber} ${totalSlices}`)
       const blockBlobClient : BlockBlobClient = containerClient?.getBlockBlobClient(name);
       const blockId = `${prefix.slice(0,8-sliceNumberStr.length)}${sliceNumberStr}`     
-      const b = Buffer.from(content,'base64')         
-      debug(`sendBlock: ${content.length} ${name} ${sliceNumber} ${totalSlices}`)
+      const b = Buffer.from(content,'base64')               
       await blockBlobClient.stageBlock(blockId,b,b.length)      
       if(sliceNumber+1==totalSlices){
         const blocks = []
@@ -38,7 +48,7 @@ export const FileService = async (config:any) : Promise<IFileService> => {
         }
         debug(`Commiting Blocks ${blocks}`)
         blockBlobClient.commitBlockList(blocks)
-        //blockBlobClient.setMetadata()
+        blockBlobClient.setMetadata(metadata)
       }
     }
   }

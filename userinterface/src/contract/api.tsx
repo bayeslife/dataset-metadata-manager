@@ -75,9 +75,11 @@ export async function getApplicationConfig(): Promise<any> {
   })
 }
 
-export async function postFileSlice(datasetType:string,content: string| ArrayBuffer,name: string,sliceNumber: number, totalSlices: number): Promise<ICommandResult> {
+export async function postFileSlice(datasetType:string,content: string| ArrayBuffer,name: string,username:string, filename:string,sliceNumber: number, totalSlices: number): Promise<ICommandResult> {
   const localToken = window.localStorage.getItem('AccessToken')    
   return service.post(`/ModelService/file`, {
+    filename,
+    username,
     fileData: content,
     datasetType,
     name,
