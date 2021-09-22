@@ -12,7 +12,7 @@ import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
 
 // eslint-disable-next-line
 function App() {
-  const [stylePath, stylePathSet] = useState('aurecon-designsystem.style.css')
+  const [stylePath, stylePathSet] = useState('data-and-analytics.style.css')
   //const [styleUrl, styleUrlSet] = useState<string | null>('https://quartile-one.gitlab.io/projects/gpc/webapplication/capability-style-management/')
   const [styleUrl, styleUrlSet] = useState<string | null>('https://stacwebstyle.z8.web.core.windows.net/')
 
