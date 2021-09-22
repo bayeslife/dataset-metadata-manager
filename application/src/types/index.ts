@@ -25,7 +25,7 @@ export type IFileEvent = {
 export interface IFileService {
   download: (datasetType:string, reference:string)=>Promise<String | null>
   downloadToFile: (filePath: string,datasetType:string, reference:string)=>Promise<void>
-  sendBlock: (datasetType:string, content:string, key:string , sliceNumber: number , totalSlices: number)=>void
+  sendBlock: (datasetType:string, content:string, key:string , sliceNumber: number , totalSlices: number,metadata:any)=>void
 }
 
 
