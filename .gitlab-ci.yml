@@ -12,10 +12,10 @@ deploy-service:
     - docker info
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_REGISTRY: "cntrdatasets.azurecr.io"
-    DOCKER_USERNAME: "cntrdatasets"
+    DOCKER_REGISTRY: "ctrnaedandashared.azurecr.io"
+    DOCKER_USERNAME: "ctrnaedandashared"
     MODEL: "datasets-app-service"
-    VERSION: "0.1.1"
+    VERSION: "0.2.0"
   script:
     - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - docker build -t $DOCKER_REGISTRY/$MODEL:$VERSION .
