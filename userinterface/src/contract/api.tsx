@@ -95,7 +95,7 @@ export async function createFileEvent(metadata:any) {
 
 export async function getDataSets() : Promise<ICommandResult> { 
    const localToken = window.localStorage.getItem('AccessToken')
-  return fetch("https://fnapsvcapi.azurewebsites.net/api/ModelService/datasetsdatads/token/datasets.json", { }).then(async (res: Response)=>{
+  return fetch("https://fnapsvcdatasetsapi.azurewebsites.net/api/ModelService/datasetsdatads/token/datasets.json", { }).then(async (res: Response)=>{
     const json = await res.json()
     return { status: COMMAND_STATUS.OK, msg: '', entity: json }
   })
