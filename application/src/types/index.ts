@@ -21,6 +21,15 @@ export type IFileEvent = {
   createdAt: Date;
 }
 
+export type IUploadFileEvent = {  
+  datasetType:string,
+  fileData: string| ArrayBuffer,
+  name: string,
+  username:string, 
+  filename:string,
+  sliceNumber: number, 
+  totalSlices: number
+}
 
 export interface IFileService {
   download: (datasetType:string, reference:string)=>Promise<String | null>
@@ -30,6 +39,7 @@ export interface IFileService {
 
 
 export interface IMetaData {
+  eventType?: string,
   name?: string
   username?: string
   datasetType?: string

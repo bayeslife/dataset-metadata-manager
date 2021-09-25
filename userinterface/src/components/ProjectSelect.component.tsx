@@ -1,10 +1,10 @@
-import Chip from '@material-ui/core/Chip';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import React from 'react';
 
 export const ProjectSelect = ()=>{
@@ -15,10 +15,10 @@ export const ProjectSelect = ()=>{
     const projectsData = ["Project1","Project2"]
     const customersData = ["Customer1","Customer2"]
 
-    const handleProjectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleProjectChange = (event: any) => {
         projectsSet(event.target.value as string[]);
       };
-    const handleCustomerChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleCustomerChange = (event: any) => {
       customersSet(event.target.value as string[]);
     };
 

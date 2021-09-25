@@ -1,15 +1,10 @@
-import Chip from '@material-ui/core/Chip';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import React, {FC,useEffect, useState} from 'react';
-import {ICommandResult} from '../../../application/src/types'
-import { getDataSets} from '../contract/api'
-import {COMMAND_STATUS} from '../../../application/src/domain'
+import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import React, { FC, useEffect, useState } from 'react';
+import { COMMAND_STATUS } from '../../../application/src/domain';
+import { ICommandResult } from '../../../application/src/types';
+import { getDataSets } from '../contract/api';
 interface IDataSetTypeSelect {
   callback: (metadata:any)=>void
 }

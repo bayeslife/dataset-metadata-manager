@@ -1,12 +1,13 @@
-import React, { FC, useState } from 'react'
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { User, UserProfile, ProjectSelect, Uploader, DataSetTypeSelection } from '../components'
-import {postFileSlice, createFileEvent } from '../contract/api'
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DataRouting from 'DataRoutingRemote/DataRouting';
+import React, { FC, useState } from 'react';
 import { IMetaData } from '../../../application/src/types';
+import { DataSetTypeSelection, ProjectSelect, Uploader, User, UserProfile } from '../components';
+import { createFileEvent } from '../contract/api';
 
 export interface IMetaDataSectionDefinition {
   name: string
@@ -17,27 +18,32 @@ export interface IMetaDataSectionDefinition {
 export const Upload: FC = () => {
 
   const [expanded, setExpanded] = useState<string | false>(false);
-  const [path,pathSet]= useState()
-
+  
   const [metadata,metadataSet] = useState<IMetaData>({})
 
   const handleProjectChange=()=>{
   }
+
+  
 
   const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
   const callback = (update:any)=>{
-    if(update){
+    if(update && metadata){      
       const changes = Object.keys(update).map((key:string)=>update[key]!==(metadata as any)[key]).filter(n=>n)      
       if(changes.length>0)
         metadataSet({...metadata,...update})    
     }
   }
 
-  const handleFileUpload= async (filename:string,blobId:string)=>{
-    const newMetaData = {...metadata,filename,blobId}
+  const handleFileUpload= async (filename:string,blobId:string)=>{  
+    const newMetaData = {
+      ...metadata,filename,
+      blobId,
+      eventType: DataRouting.EVENT_TYPES.DATASET_UPLOADED
+    }
     metadataSet(newMetaData)    
     await createFileEvent(newMetaData)
   }

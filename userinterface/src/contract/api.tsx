@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { getAPI } from '../config'
-import { IFileEvent, ICommandResult } from '../../../application/src/types'
+import { IFileEvent, ICommandResult, IUploadFileEvent } from '../../../application/src/types'
 import { COMMAND_STATUS } from '../../../application/src/domain'
 
 const handleResponse = (res: Response) => {
@@ -75,17 +75,11 @@ export async function getApplicationConfig(): Promise<any> {
   })
 }
 
-export async function postFileSlice(datasetType:string,content: string| ArrayBuffer,name: string,username:string, filename:string,sliceNumber: number, totalSlices: number): Promise<ICommandResult> {
+export async function postFileSlice(event : IUploadFileEvent ): Promise<ICommandResult> {
+
+
   const localToken = window.localStorage.getItem('AccessToken')    
-  return service.post(`/ModelService/file`, {
-    filename,
-    username,
-    fileData: content,
-    datasetType,
-    name,
-    sliceNumber,
-    totalSlices
-  },{
+  return service.post(`/ModelService/file`, event,{
     headers: {      
       Authorization: `Bearer ${localToken}`,
     }

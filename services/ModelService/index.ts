@@ -42,7 +42,6 @@ const initializeEventService = async () => {
 };
 initializeFileService();
 
-
 app.get(
   "/api/ModelService/:dataset/:reference/files/:filename",
   //passport.authenticate("oauth-bearer", { session: false }),
@@ -87,19 +86,12 @@ app.post(
       if (!modelService) await initializeModel();
 
       const metadata: IMetaData = req.body;
-              
+
+      debug(`Creating new file event`)
+      debug(metadata)
+                  
       await eventService.produce([metadata]);
-
-      await modelService.createFileEvent({
-        datasetType: metadata.datasetType,
-        filename: metadata.filename,
-        blobId: metadata.blobId,
-        name: metadata.name,
-        username: metadata.username,
-        createAt: Date.now()
-
-      })
-      
+      await modelService.createFileEvent({...metadata, createAt: Date.now()})                  
       res.status(200).send(metadata);
     } catch (ex) {
       console.log(ex);
@@ -124,6 +116,8 @@ app.post(
 
     try {
       if (!fileService) await initializeFileService();
+
+      
       const {fileData,name,sliceNumber,totalSlices,datasetType,filename,username} = req.body      
       const encoded = fileData.slice("data:application/octet-stream;base64,".length,fileData.length)      
       await fileService.sendBlock(datasetType,encoded,name,sliceNumber,totalSlices,{filename,username})            

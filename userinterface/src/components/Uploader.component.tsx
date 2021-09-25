@@ -1,16 +1,17 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { FC, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import {postFileSlice, createFileEvent } from '../contract/api'
 import md5 from 'md5'
 import { azureBlobFolderNameTransform } from '../../../application/src/service/CloudService'
+import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
+
+import { IUploadFileEvent } from '../../../application/src/types'
 
 interface IUploaderProps {
   datasetType: string,  
   callback: (filename:string,blobId:string)=>void
 }
-
-
 
 export const Uploader : FC<IUploaderProps> = (props)=>{
 
@@ -71,8 +72,19 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
                       
               const handleFile = async (e: ProgressEvent<FileReader>) => {
                 if (e.target && e.target.result) {
-                  const content = e.target.result                             
-                  await postFileSlice(azureBlobFolderNameTransform(datasetType),content,storedFileName,msalAccount.username,file.name,sliceNumber,totalSlices)              
+                  const content = e.target.result   
+                                    
+                  const event : IUploadFileEvent = {                  
+                    filename: file.name,
+                    username: msalAccount.username,
+                    fileData: content,
+                    datasetType: azureBlobFolderNameTransform(datasetType),
+                    name: storedFileName,
+                    sliceNumber,
+                    totalSlices
+                  }
+
+                  await postFileSlice(event)              
                   if ( next_slice < file.size ) {                
                     uploadSlice(next_slice,sliceNumber+1)
                     progressSet(sliceNumber)
