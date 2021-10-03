@@ -7,9 +7,8 @@ import { COMMAND_STATUS } from "../../application/src/domain";
 import { getModel } from "../../application/src/model";
 import { Log } from "../../application/src/persistentlog";
 import { ModelService } from "../../application/src/service";
-import { EventService } from "../../application/src/service/EventService";
 import { FileService } from "../../application/src/service/FileService";
-import { IEventService, IFileService, IMetaData } from '../../application/src/types';
+import { IFileService, IMetaData } from '../../application/src/types';
 import { authorizationStrategy } from "../src/auth";
 import { config } from "../src/config";
 
@@ -32,13 +31,6 @@ let fileService : IFileService = null;
 const initializeFileService = async () => {
   if(!fileService)
     fileService = await FileService(config.storageAccount)
-};
-initializeFileService();
-
-let eventService : IEventService = null;
-const initializeEventService = async () => {
-  if(!eventService)
-    eventService = await EventService(config.eventhub)
 };
 initializeFileService();
 
@@ -81,8 +73,7 @@ app.post(
   "/api/ModelService/fileevents",
   passport.authenticate("oauth-bearer", { session: false }),
   async (req, res) => {
-    try {
-      if (!eventService) await initializeEventService();
+    try {      
       if (!modelService) await initializeModel();
 
       const metadata: IMetaData = req.body;
@@ -90,7 +81,7 @@ app.post(
       debug(`Creating new file event`)
       debug(metadata)
                   
-      await eventService.produce([metadata]);
+      //await eventService.produce([metadata]);
       await modelService.createFileEvent({...metadata, createAt: Date.now()})                  
       res.status(200).send(metadata);
     } catch (ex) {

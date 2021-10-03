@@ -3,7 +3,8 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import DataRouting from 'DataRoutingRemote/DataRouting'
+import RemoteDataRouting from 'DataRoutingRemote/DataRouting'
+import RemoteDatasetEvent from 'DataRoutingRemote/DatasetEvent'
 import React, { FC, useState } from 'react'
 import { IMetaData } from '../../../application/src/types'
 import { DataSetTypeSelection, ProjectSelect, Uploader, User, UserProfile } from '../components'
@@ -46,9 +47,10 @@ export const Upload: FC = () => {
       timestamp: Date.now(),
       filename,
       blobId,
-      eventType: DataRouting.EVENT_TYPES.DATASET_UPLOADED,
+      eventType: RemoteDataRouting.EVENT_TYPES.DATASET_UPLOADED,
     }
     metadataSet(newMetaData)
+    await RemoteDatasetEvent.createDatasetEvent(newMetaData)
     await createFileEvent(newMetaData)
   }
 
