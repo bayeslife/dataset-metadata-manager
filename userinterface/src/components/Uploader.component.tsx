@@ -52,7 +52,7 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
           if (e.target && e.target.files && e.target.files.length > 0) {
             
             const file = e.target.files[0]
-
+            
             let extension = ''
             if(file.name.lastIndexOf('.')>=0){
               extension = file.name.substring(file.name.lastIndexOf('.'))
@@ -63,6 +63,7 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
             const fileHash = md5(signature)              
             const storedFileName=`${fileHash}${extension}`
             const totalSlices = Math.floor(file.size/SLICE_SIZE)+  (file.size % SLICE_SIZE ? 1 : 0)
+            const contenttype = file.type
                   
             const uploadSlice = (start:number,sliceNumber:number)=>{
               const fileReader = new FileReader()
@@ -81,7 +82,8 @@ export const Uploader : FC<IUploaderProps> = (props)=>{
                     datasetType: azureBlobFolderNameTransform(datasetType),
                     name: storedFileName,
                     sliceNumber,
-                    totalSlices
+                    totalSlices,
+                    contenttype
                   }
 
                   await postFileSlice(event)              

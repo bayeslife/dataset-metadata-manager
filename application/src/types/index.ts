@@ -29,6 +29,7 @@ export type IUploadFileEvent = {
   filename:string,
   sliceNumber: number, 
   totalSlices: number
+  contenttype: string
 }
 
 export interface IFileService {

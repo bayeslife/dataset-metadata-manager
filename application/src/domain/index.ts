@@ -8,3 +8,5 @@ export enum COMMAND_STATUS {
   FAILED = 'FAILED',
   NOTFOUND = 'NOTFOUND',
 }
+
+export const WINDOW_STORAGE_SELECTED_DATASET="selected-dataset"

@@ -118,9 +118,9 @@ app.post(
       if (!fileService) await initializeFileService();
 
       
-      const {fileData,name,sliceNumber,totalSlices,datasetType,filename,username} = req.body      
+      const {fileData,name,sliceNumber,totalSlices,datasetType,filename,username,contenttype} = req.body      
       const encoded = fileData.slice("data:application/octet-stream;base64,".length,fileData.length)      
-      await fileService.sendBlock(datasetType,encoded,name,sliceNumber,totalSlices,{filename,username})            
+      await fileService.sendBlock(datasetType,encoded,name,sliceNumber,totalSlices,{filename,username,contenttype})            
       res.status(200).send({});
     } catch (ex) {
       console.log(ex);

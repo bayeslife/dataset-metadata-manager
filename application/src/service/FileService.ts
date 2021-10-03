@@ -47,8 +47,8 @@ export const FileService = async (config:any) : Promise<IFileService> => {
           blocks.push(blockId)
         }
         debug(`Commiting Blocks ${blocks}`)
-        blockBlobClient.commitBlockList(blocks)
-        blockBlobClient.setMetadata(metadata)
+        await blockBlobClient.commitBlockList(blocks)
+        await blockBlobClient.setMetadata(metadata)
       }
     }
   }

@@ -8,6 +8,7 @@ import React, { FC, useState } from 'react';
 import { IMetaData } from '../../../application/src/types';
 import { DataSetTypeSelection, ProjectSelect, Uploader, User, UserProfile } from '../components';
 import { createFileEvent } from '../contract/api';
+import { WINDOW_STORAGE_SELECTED_DATASET } from '../../../application/src/domain';
 
 export interface IMetaDataSectionDefinition {
   name: string
@@ -19,13 +20,13 @@ export const Upload: FC = () => {
 
   const [expanded, setExpanded] = useState<string | false>(false);
   
-  const [metadata,metadataSet] = useState<IMetaData>({})
+  let selectedDataset = window.localStorage.getItem(WINDOW_STORAGE_SELECTED_DATASET)
+  let selectedMetadata  = selectedDataset ? JSON.parse(selectedDataset) : null
+  const [metadata,metadataSet] = useState<IMetaData>({datasetType: selectedMetadata?.metadata.Id})
 
   const handleProjectChange=()=>{
   }
-
-  
-
+     
   const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -48,10 +49,12 @@ export const Upload: FC = () => {
     await createFileEvent(newMetaData)
   }
   
+
+
   const metadataDefinitions : IMetaDataSectionDefinition [] = [
     {
       name: "Data Set",
-      about: "Data Set",
+      about: selectedMetadata ? selectedMetadata?.name : "Select a dataset",
       component: <DataSetTypeSelection callback={callback}/> 
     }, 
     {
