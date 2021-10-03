@@ -39,7 +39,6 @@ import AureconLogo from '../assets/logo.png'
 
 // eslint-disable-next-line
 export const Layout = (props: any): JSX.Element => {
-
   const Logo = <img src={AureconLogo}></img>
 
   const handleNavbarClick = (url: string, hash: boolean) => {
@@ -51,7 +50,7 @@ export const Layout = (props: any): JSX.Element => {
   links.push({ label: 'Upload', path: '/Upload', match: /^\/upload/ })
   links.push({ label: 'History', path: '/History', match: /^\/history/ })
   links.push({ label: 'DataSets', path: '/DataSets', match: /^\/datasets/ })
-  
+
   const actions: IMenuAction[] = []
   actions.push({
     icon: 'account_circle',

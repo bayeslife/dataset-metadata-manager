@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react'
 import { HashRouter, Switch, Route } from 'react-router-dom'
 import { Layout } from './layout'
-import { Home , Upload, History, Datasets} from './pages'
+import { Home, Upload, History, Datasets } from './pages'
 import { updateConfig } from './config'
 import { Loader } from './components'
 import { getApplicationConfig } from './contract/api'
@@ -31,21 +31,21 @@ function App() {
   return (
     <Suspense fallback={<Loader />}>
       <RemoteConfigData setConfig={setConfig} getApplicationConfig={getApplicationConfig}>
-        <StyleLoader stylePath={stylePath} styleUrl={styleUrl}>          
-              <HashRouter hashType='slash'>
-                <Layout>
-                  <Switch>
-                    <Route path='/style' render={() => <StyleSelect onSelect={onSelect} />} />                                        
-                    <Route path='/datasets' component={Datasets} />
-                    <Route path='/history' component={History} />
-                    <Route path='/upload' component={Upload} />
-                    <Route path='/' component={Home} />
-                  </Switch>
-                </Layout>
-              </HashRouter>                   
+        <StyleLoader stylePath={stylePath} styleUrl={styleUrl}>
+          <HashRouter hashType='slash'>
+            <Layout>
+              <Switch>
+                <Route path='/style' render={() => <StyleSelect onSelect={onSelect} />} />
+                <Route path='/datasets' component={Datasets} />
+                <Route path='/history' component={History} />
+                <Route path='/upload' component={Upload} />
+                <Route path='/' component={Home} />
+              </Switch>
+            </Layout>
+          </HashRouter>
         </StyleLoader>
       </RemoteConfigData>
-      <script src="renderer.js"></script>
+      <script src='renderer.js'></script>
     </Suspense>
   )
 }

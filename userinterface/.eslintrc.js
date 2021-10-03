@@ -36,5 +36,7 @@ module.exports = {
     'react/prop-types': 0,
     'react/display-name': 'off',
     'react/no-unescaped-entities': 0,
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/no-unused-vars': 0
   },
 }
