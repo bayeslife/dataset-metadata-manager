@@ -32,7 +32,7 @@ build-static-site:
   script:
     - cd userinterface
     - npm install
-    - DATAROUTING_DOMAIN=https://stacwebdatasetsrouting.z8.web.core.windows.net APPFRAME_DOMAIN="https://stacwebappframe.z8.web.core.windows.net" STYLE_DOMAIN="https://stacwebstyle.z8.web.core.windows.net" npm run build
+    - DATASHARING_DOMAIN="https://stacwebdatasetssharing.z8.web.core.windows.net"  DATAROUTING_DOMAIN=https://stacwebdatasetsrouting.z8.web.core.windows.net APPFRAME_DOMAIN="https://stacwebappframe.z8.web.core.windows.net" STYLE_DOMAIN="https://stacwebstyle.z8.web.core.windows.net" npm run build
 
 deploy-static-site:
   image: mcr.microsoft.com/azure-cli
