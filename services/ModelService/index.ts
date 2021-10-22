@@ -57,7 +57,7 @@ app.get(
 
 app.get(
     "/api/ModelService/fileevents",
-    //passport.authenticate("oauth-bearer", { session: false }),
+    passport.authenticate("oauth-bearer", { session: false }),
     async (req, res) => {
       if (!modelService) await initializeModel();
       let content = await modelService.queryFileEvents({})

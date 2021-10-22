@@ -8,6 +8,7 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const APPFRAME_DOMAIN = process.env.APPFRAME_DOMAIN || "https://localhost:3007"
 const STYLE_DOMAIN = process.env.STYLE_DOMAIN || "https://localhost:3011"
 const DATAROUTING_DOMAIN = process.env.DATAROUTING_DOMAIN || "https://localhost:3019"
+const DATASHARING_DOMAIN = process.env.DATASHARING_DOMAIN || "https://localhost:3025"
 
 const deps = require('./package.json').dependencies
 
@@ -87,12 +88,13 @@ module.exports = (env) => {
     plugins: [
       new EnvironmentWebpackPlugin(['API_DOMAIN']),
       new ModuleFederationPlugin({
-        name: 'ApplicationProjects',
+        name: 'DataCapture',
         filename: 'remoteEntry.js',
         remotes: {
           ApplicationFrameRemote: `ApplicationFrame@${APPFRAME_DOMAIN}/remoteEntry.js`,                
           StyleManagementRemote: `StyleManagement@${STYLE_DOMAIN}/remoteEntry.js`,  
           DataRoutingRemote: `DataRouting@${DATAROUTING_DOMAIN}/remoteEntry.js`,          
+          DataSharingRemote: `DataSharing@${DATASHARING_DOMAIN}/remoteEntry.js`,
         },
         exposes: {           
         },

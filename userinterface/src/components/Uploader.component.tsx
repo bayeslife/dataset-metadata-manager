@@ -9,12 +9,12 @@ import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
 import { IUploadFileEvent } from '../../../application/src/types'
 
 interface IUploaderProps {
-  datasetType: string
+  metadata: any
   callback: (filename: string, blobId: string) => void
 }
 
 export const Uploader: FC<IUploaderProps> = (props) => {
-  const { datasetType, callback } = props
+  const { metadata, callback } = props
 
   const SLICE_SIZE = 1 * 1000 * 1024
 
@@ -73,10 +73,11 @@ export const Uploader: FC<IUploaderProps> = (props) => {
               const content = e.target.result
 
               const event: IUploadFileEvent = {
+                ...metadata,
                 filename: file.name,
                 username: msalAccount.username,
                 fileData: content,
-                datasetType: azureBlobFolderNameTransform(datasetType),
+                datasetType: azureBlobFolderNameTransform(metadata.datasetType),
                 name: storedFileName,
                 sliceNumber,
                 totalSlices,
@@ -109,8 +110,9 @@ export const Uploader: FC<IUploaderProps> = (props) => {
   else {
     return (
       <div>
-        {!datasetType && <div className='error'>Please select a Data Set Type</div>}
-        <input type='file' onChange={(e) => handleUpload(e)} disabled={!datasetType} value={value} />
+        {!metadata.datasetType && <div className='error'>Please select a Data Set Type</div>}
+        {!metadata.scopetype && <div className='error'>Please select a Sharing Scope</div>}
+        <input type='file' onChange={(e) => handleUpload(e)} disabled={!metadata.datasetType} value={value} />
       </div>
     )
   }

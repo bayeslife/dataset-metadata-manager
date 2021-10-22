@@ -5,11 +5,13 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import RemoteDataRouting from 'DataRoutingRemote/DataRouting'
 import RemoteDatasetEvent from 'DataRoutingRemote/DatasetEvent'
+import RemoteDataShare from 'DataSharingRemote/DataShare'
 import React, { FC, useState } from 'react'
 import { IMetaData } from '../../../application/src/types'
 import { DataSetTypeSelection, ProjectSelect, Uploader, User, UserProfile } from '../components'
 import { createFileEvent } from '../contract/api'
 import { WINDOW_STORAGE_SELECTED_DATASET } from '../../../application/src/domain'
+
 
 export interface IMetaDataSectionDefinition {
   name: string
@@ -31,6 +33,7 @@ export const Upload: FC = () => {
   const handleChange = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
   }
+  
 
   const callback = (update: any) => {
     if (update && metadata) {
@@ -52,6 +55,10 @@ export const Upload: FC = () => {
     metadataSet(newMetaData)
     await RemoteDatasetEvent.createDatasetEvent(newMetaData)
     await createFileEvent(newMetaData)
+  }
+
+  const handleShareMetadata = (shareMetadata: any)=>{
+    metadataSet({...metadata,...shareMetadata})
   }
 
   const metadataDefinitions: IMetaDataSectionDefinition[] = [
@@ -109,14 +116,14 @@ export const Upload: FC = () => {
       component: <div>Capablity Details</div>,
     },
     {
-      name: 'Information Classification',
+      name: 'Information Sharing/Classification',
       about: 'How sensitive is the information',
-      component: <div>Classification Details</div>,
+      component: <div><RemoteDataShare metadataCallback={handleShareMetadata}/></div>,
     },
     {
       name: 'Upload',
       about: 'Upload file(s)',
-      component: <Uploader datasetType={metadata?.datasetType || ''} callback={handleFileUpload} />,
+      component: <Uploader metadata={metadata} callback={handleFileUpload} />,
     },
   ]
 
