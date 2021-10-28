@@ -19,6 +19,16 @@ export const FileService = async (config:any) : Promise<IFileService> => {
     }
     createClient()
 
+  const standardize = (metadata: any)=>{
+    return Object.keys(metadata).reduce((h:any,key:string)=>{
+      if(typeof metadata[key] === 'string'){
+        h[key]=metadata[key]
+      }else {
+        h[key]=`${metadata[key]}`
+      }
+      return h
+    },{})}
+
   const sendBlock = async (datasetType: string, content:string, name: string, sliceNumber: number, totalSlices: number,metadata:any)=> {    
     if(blobServiceClient){
       const container = datasetType.toLowerCase()
@@ -46,10 +56,11 @@ export const FileService = async (config:any) : Promise<IFileService> => {
           const blockId = `${prefix.slice(0,8-sliceNumberStr.length)}${sliceNumberStr}`
           blocks.push(blockId)
         }
-        debug(`Commiting Blocks ${blocks}`)
+        //debug(`Commiting Blocks ${blocks}`)
         await blockBlobClient.commitBlockList(blocks)
-        debug(`Commiting Metata ${JSON.stringify(metadata,null,'')}`)
-        await blockBlobClient.setMetadata(metadata)
+        const md = standardize(metadata)
+        debug(`Commiting Metata ${JSON.stringify(md,null,'')}`)
+        await blockBlobClient.setMetadata(md)
       }
     }
   }

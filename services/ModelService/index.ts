@@ -107,11 +107,17 @@ app.post(
 
     try {
       if (!fileService) await initializeFileService();
-
       
-      const {fileData,name,sliceNumber,totalSlices,datasetType,filename,username,contenttype} = req.body      
+      const {fileData,name,sliceNumber,totalSlices,datasetType} = req.body      
       const encoded = fileData.slice("data:application/octet-stream;base64,".length,fileData.length)      
-      await fileService.sendBlock(datasetType,encoded,name,sliceNumber,totalSlices,{filename,username,contenttype})            
+
+      const meta = {...req.body}
+      delete meta.fileData
+      delete meta.sliceNumber
+      delete meta.totalSlices
+      delete meta.blobId
+      delete meta.name
+      await fileService.sendBlock(datasetType,encoded,name,sliceNumber,totalSlices,meta)            
       res.status(200).send({});
     } catch (ex) {
       console.log(ex);

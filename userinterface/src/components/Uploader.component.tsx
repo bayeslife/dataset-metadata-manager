@@ -15,7 +15,7 @@ interface IUploaderProps {
 
 export const Uploader: FC<IUploaderProps> = (props) => {
   const { metadata, callback } = props
-
+  
   const SLICE_SIZE = 1 * 1000 * 1024
 
   const [value, setValue] = useState('')
@@ -54,7 +54,7 @@ export const Uploader: FC<IUploaderProps> = (props) => {
         if (file.name.lastIndexOf('.') >= 0) {
           extension = file.name.substring(file.name.lastIndexOf('.'))
         }
-
+        
         const signatureBlob = file.slice(0, 1024)
         const signature = await getFileSignature(signatureBlob)
         const fileHash = md5(signature)
@@ -80,9 +80,10 @@ export const Uploader: FC<IUploaderProps> = (props) => {
                 datasetType: azureBlobFolderNameTransform(metadata.datasetType),
                 name: storedFileName,
                 sliceNumber,
-                totalSlices,
-                contenttype,
+                totalSlices   
               }
+              if(contenttype)
+                event.contenttype = contenttype
 
               await postFileSlice(event)
               if (next_slice < file.size) {

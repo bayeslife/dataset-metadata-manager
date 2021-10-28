@@ -63,7 +63,7 @@ export const config =  {
     clientId: process.env.AUTH_CLIENTID || 'ab8c7f24-a30e-4ef4-bf82-713d248f96f9',
     tenantId: process.env.AUTH_TENANTID || '951b1ed2-d31c-4c2a-9dd6-8ea6137ceb9d',
     scopes: process.env.AUTH_SCOPES
-      ? [process.env.AUTH_SCOPES]
+      ? process.env.AUTH_SCOPES.split(',')
       : ['https://analysis.windows.net/powerbi/api/.default'],
     redirectUri: process.env.AUTH_REDIRECTURI || 'https://localhost:3005',
   }
