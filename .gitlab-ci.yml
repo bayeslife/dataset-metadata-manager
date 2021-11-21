@@ -15,7 +15,7 @@ deploy-service:
     DOCKER_REGISTRY: "ctrnaedandashared.azurecr.io"
     DOCKER_USERNAME: "ctrnaedandashared"
     MODEL: "datasets-app-service"
-    VERSION: "0.2.4"
+    VERSION: "0.2.5"
   script:
     - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - docker build -t $DOCKER_REGISTRY/$MODEL:$VERSION .

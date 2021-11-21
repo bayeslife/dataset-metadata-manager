@@ -87,7 +87,7 @@ The application is deployed to the cloud as a Dockerfile via gitHub actions.
 ## Azure Settings Management
 
 Retrieve settings locally
-```func azure functionapp fetch-app-seetings fnapsvcdatasetsapi ```
+```func azure functionapp fetch-app-settings fnapsvcdatasetsapi ```
 
 Publish settings 
 ```func azure functionapp publish fnapsvcdatasetsapi --publish-settings-only```
