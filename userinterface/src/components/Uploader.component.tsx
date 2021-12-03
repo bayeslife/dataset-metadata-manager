@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { postFileSlice, createFileEvent } from '../contract/api'
 import md5 from 'md5'
+import CryptoJS from 'crypto-js'
 import { azureBlobFolderNameTransform } from '../../../application/src/service/CloudService'
 import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
 
@@ -16,7 +17,7 @@ interface IUploaderProps {
 export const Uploader: FC<IUploaderProps> = (props) => {
   const { metadata, callback } = props
   
-  const SLICE_SIZE = 1 * 1000 * 1024
+  const ONE_MEG = 1 * 1000 * 1024
 
   const [value, setValue] = useState('')
   const [hash, hashSet] = useState(1)
@@ -55,17 +56,27 @@ export const Uploader: FC<IUploaderProps> = (props) => {
           extension = file.name.substring(file.name.lastIndexOf('.'))
         }
         
-        const signatureBlob = file.slice(0, 1024)
-        const signature = await getFileSignature(signatureBlob)
-        const fileHash = md5(signature)
+        let offset=0
+        var md5 = CryptoJS.algo.MD5.create();
+        while(offset<file.size){          
+          const blockSize = ((offset + file.size) < ONE_MEG) ? file.size : ONE_MEG
+          const chunk = file.slice(offset, offset+blockSize)
+          const signatureBlob = await chunk.text()          
+          md5.update(signatureBlob)
+          offset = offset+blockSize
+        }        
+        const mdhash = md5.finalize()
+        var fileHash = mdhash.toString(CryptoJS.enc.Hex);
+        console.log(fileHash)
+        //const fileHash = md5(signature)
         const storedFileName = `${fileHash}${extension}`
-        const totalSlices = Math.floor(file.size / SLICE_SIZE) + (file.size % SLICE_SIZE ? 1 : 0)
+        const totalSlices = Math.floor(file.size / ONE_MEG) + (file.size % ONE_MEG ? 1 : 0)
         const contenttype = file.type
 
         const uploadSlice = (start: number, sliceNumber: number) => {
           const fileReader = new FileReader()
 
-          const next_slice = start + SLICE_SIZE + 1
+          const next_slice = start + ONE_MEG + 1
           const blob = file.slice(start, next_slice)
 
           const handleFile = async (e: ProgressEvent<FileReader>) => {
