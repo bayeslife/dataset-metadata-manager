@@ -53,6 +53,11 @@ export const Layout = (props: any): JSX.Element => {
 
   const actions: IMenuAction[] = []
   actions.push({
+    icon: 'settings',
+    size: 'large',
+    click: () => handleNavbarClick('/settings', true),
+  })
+  actions.push({
     icon: 'account_circle',
     size: 'large',
     click: () => handleNavbarClick('/profile', true),

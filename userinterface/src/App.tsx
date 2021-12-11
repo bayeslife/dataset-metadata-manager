@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react'
 import { HashRouter, Switch, Route } from 'react-router-dom'
 import { Layout } from './layout'
-import { Home, Upload, History, Datasets } from './pages'
+import { Home, Upload, History, Datasets, Settings ,STYLE_SELECT} from './pages'
 import { updateConfig } from './config'
 import { Loader } from './components'
 import { getApplicationConfig } from './contract/api'
@@ -12,13 +12,11 @@ import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
 
 // eslint-disable-next-line
 function App() {
-  const [stylePath, stylePathSet] = useState('data-and-analytics.style.css')
+  const stylePath = localStorage.getItem(STYLE_SELECT) || 'data-and-analytics.style.css'
   //const [styleUrl, styleUrlSet] = useState<string | null>('https://quartile-one.gitlab.io/projects/gpc/webapplication/capability-style-management/')
-  const [styleUrl, styleUrlSet] = useState<string | null>('https://stacwebstyle.z8.web.core.windows.net/')
+  //const [styleUrl, styleUrlSet] = useState<string | null>('https://stacwebstyle.z8.web.core.windows.net/')  
+  const [styleUrl, styleUrlSet] = useState<string | null>('https://localhost:3011')
 
-  const onSelect = (value: string) => {
-    stylePathSet(value)
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setConfig = (config: any) => {
@@ -28,6 +26,7 @@ function App() {
     updateConfig(config)
   }
 
+
   return (
     <Suspense fallback={<Loader />}>
       <RemoteConfigData setConfig={setConfig} getApplicationConfig={getApplicationConfig}>
@@ -35,10 +34,11 @@ function App() {
           <HashRouter hashType='slash'>
             <Layout>
               <Switch>
-                <Route path='/style' render={() => <StyleSelect onSelect={onSelect} />} />
+                <Route path='/style' render={() => <StyleSelect />} />
                 <Route path='/datasets' component={Datasets} />
                 <Route path='/history' component={History} />
                 <Route path='/upload' component={Upload} />
+                <Route path='/settings' component={Settings} />
                 <Route path='/' component={Home} />
               </Switch>
             </Layout>
