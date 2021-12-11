@@ -14,8 +14,8 @@ import RemoteConfigData from 'ApplicationFrameRemote/ConfigData'
 function App() {
   const stylePath = localStorage.getItem(STYLE_SELECT) || 'data-and-analytics.style.css'
   //const [styleUrl, styleUrlSet] = useState<string | null>('https://quartile-one.gitlab.io/projects/gpc/webapplication/capability-style-management/')
-  //const [styleUrl, styleUrlSet] = useState<string | null>('https://stacwebstyle.z8.web.core.windows.net/')  
-  const [styleUrl, styleUrlSet] = useState<string | null>('https://localhost:3011')
+  const [styleUrl, styleUrlSet] = useState<string | null>('https://stacwebstyle.z8.web.core.windows.net/')  
+  //const [styleUrl, styleUrlSet] = useState<string | null>('https://localhost:3011')
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
