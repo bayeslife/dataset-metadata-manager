@@ -12,8 +12,8 @@ deploy-service:
     - docker info
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_REGISTRY: "ctrnaedandashared.azurecr.io"
-    DOCKER_USERNAME: "ctrnaedandashared"
+    DOCKER_REGISTRY: "cntrdataanda.azurecr.io"
+    DOCKER_USERNAME: "cntrdataanda"
     MODEL: "datasets-app-service"
     VERSION: "0.2.6"
   script:
