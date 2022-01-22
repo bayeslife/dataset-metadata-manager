@@ -12,10 +12,10 @@ const LOCAL = process.env.NODE_ENV !== 'production'
 const SERVER_PORT = process.env.PORT || 3001
 
 const inMemoryDB = {
-  USER: "gpc",
-  PASSWORD: 'gpc',
+  USER: "notapplicable",
+  PASSWORD: 'notapplicable',
   DBHOST: 'localhost',
-  DB: 'gpc',
+  DB: 'notapplicable',
   DBDIALECT: 'sqlite',
   schema: 'project',
   force: true,
@@ -29,7 +29,7 @@ const localDB = {
     DBHOST: process.env.DB_SERVER,
     DB: process.env.DB_DATABASE,
     DBDIALECT: 'mssql',
-    schema: 'project',
+    schema: 'dataset',
     force: true,
     RESYNC: process.env.RESYNC, //set to true to populate schema
     logging: true,  

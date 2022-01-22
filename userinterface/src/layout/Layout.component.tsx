@@ -2,6 +2,7 @@ import React from 'react'
 import { getMSALConfiguration } from '../config'
 import RemoteMenu from 'ApplicationFrameRemote/Menu'
 import RemoteToken from 'ApplicationFrameRemote/Token'
+import RemoteJobNotifier from 'DataRoutingRemote/JobNotifier'
 
 export interface IMenuLink {
   path: string
@@ -67,6 +68,7 @@ export const Layout = (props: any): JSX.Element => {
 
   return (
     <div className='layoutContainer'>
+      <RemoteJobNotifier/>
       <RemoteMenu logo={Logo} links={links} actions={actions}>
         <RemoteToken config={msalConfig} cssClass={'button is-small is-text is-navbar'} />
       </RemoteMenu>

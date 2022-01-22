@@ -11,3 +11,9 @@ declare module 'DataRoutingRemote/DatasetEvent' {
     createDatasetEvent: (event: any) => Promise<void>    
   }
 }
+
+
+declare module 'DataRoutingRemote/JobNotifier' {
+  declare const JobNotifier: any
+  export default JobNotifier
+}
