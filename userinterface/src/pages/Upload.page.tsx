@@ -57,6 +57,7 @@ export const Upload: FC = () => {
     openSet(true)
     const newMetaData = {
       ...metadata,
+      id: `${Date.now()}`,
       timestamp: Date.now(),
       filename,
       blobId,
