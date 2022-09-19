@@ -4,6 +4,7 @@ console.log(`Sourcing configuration from ${DOTENV_CONFIG}`)
 DOTENV.config({ path: DOTENV_CONFIG })
 
 import bodyparser from "body-parser";
+import cors from 'cors';
 import Debug from "debug";
 import express from "express";
 import passport from "passport";
@@ -15,8 +16,6 @@ import { FileService } from "../../../application/src/service/FileService";
 import { IFileService, IMetaData } from '../../../application/src/types';
 import { authorizationStrategy } from "../../src/auth";
 import { config } from "../../src/config";
-
-import cors from 'cors';
 
 const debug = Debug("ModelService");
 
