@@ -1,6 +1,5 @@
   
-deploy-service:
-  stage: deploy-service
+deploy-service:  
   image: docker:19.03.12
   services:
     - name: docker:19.03.12-dind
@@ -18,8 +17,7 @@ deploy-service:
     - docker push $DOCKER_REGISTRY/$MODEL:$VERSION
 
 build-static-site:
-  image: node:15.12-alpine3.13
-  stage: build-static-site
+  image: node:15.12-alpine3.13  
   variables:
     BASE_URL: "/"
   artifacts:
@@ -31,8 +29,7 @@ build-static-site:
     - DATASHARING_DOMAIN="https://stacwebdatasetssharing.z8.web.core.windows.net"  DATAROUTING_DOMAIN=https://stacwebdatasetsrouting.z8.web.core.windows.net APPFRAME_DOMAIN="https://stacwebappframe.z8.web.core.windows.net" STYLE_DOMAIN="https://stacwebstyle.z8.web.core.windows.net" npm run build
 
 deploy-static-site:
-  image: mcr.microsoft.com/azure-cli
-  stage: deploy-static-site
+  image: mcr.microsoft.com/azure-cli  
   needs: [build-static-site]
   variables:
     BASE_URL: "/"
