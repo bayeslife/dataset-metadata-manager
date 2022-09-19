@@ -44,7 +44,7 @@ const STORAGE_DIRECTORY = '/tmp/'
 
 export const config =  {
   LOCAL,
-  SERVER_PORT,  
+  port: process.env.PORT || 8080,  
   STORAGE_DIRECTORY,
   APP_URL,
   database,
