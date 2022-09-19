@@ -90,7 +90,7 @@ export async function postFileSlice(event : IUploadFileEvent ): Promise<ICommand
 
 export async function getDataSets() : Promise<ICommandResult> { 
    const localToken = window.localStorage.getItem('AccessToken')
-  return fetch("https://fnapsvcdatasetsapi.azurewebsites.net/api/ModelService/datasetsdatads/token/distribution/datasets.json", { }).then(async (res: Response)=>{
+  return fetch("https://cntradatasetsapi.happystone-50fbf9cc.australiaeast.azurecontainerapps.io/api/ModelService/datasetsdatads/token/distribution/datasets.json", { }).then(async (res: Response)=>{
     const json = await res.json()
     return { status: COMMAND_STATUS.OK, msg: '', entity: json }
   })
