@@ -14,7 +14,7 @@ deploy-service:
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_REGISTRY: "cntrdataanda.azurecr.io"
     DOCKER_USERNAME: "cntrdataanda"
-    MODEL: "datasets-app-service"
+    MODEL: "datasets-collector-service"
     VERSION: "0.3.0"
   script:
     - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
