@@ -1,7 +1,3 @@
-stages:  
-  - deploy-service
-  - build-static-site  
-  - deploy-static-site
   
 deploy-service:
   stage: deploy-service
@@ -15,7 +11,7 @@ deploy-service:
     DOCKER_REGISTRY: "cntrdataanda.azurecr.io"
     DOCKER_USERNAME: "cntrdataanda"
     MODEL: "datasets-collector-service"
-    VERSION: "0.3.1"
+    VERSION: "0.3.2"
   script:
     - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - docker build -t $DOCKER_REGISTRY/$MODEL:$VERSION .
